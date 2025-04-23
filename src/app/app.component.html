@@ -1,48 +1,45 @@
 <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
-    nzCollapsible
-    nzWidth="256px"
-    nzBreakpoint="md"
-    [(nzCollapsed)]="isCollapsed"
-    [nzTrigger]="null">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="200px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzTheme="light">
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
-        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-        <h1>Ant Design Of Angular</h1>
+      <span class="header-trigger" (click)="isCollapsed = !isCollapsed"
+            [ngStyle]="{'padding': isCollapsed ? '20px 20px' : '20px 13px'}">
+        <span class="trigger" nz-icon nzType="menu"></span>
+      </span>
+      <a routerLink="/dashboard">
+        <img src="/img/icon.png" alt="logo">
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
-          </li>
-        </ul>
+    <ul nz-menu nzTheme="light" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-menu-item routerLink="/dashboard" [nzSelected]="isActive('/dashboard')"
+        [matTooltip]="isCollapsed ? '統計資料' : ''" matTooltipPosition="right">
+        <nz-icon nzType="bar-chart" />
+        <span>統計資料</span>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
+      <li nz-menu-item
+          [matTooltip]="isCollapsed ? '商品管理' : ''" matTooltipPosition="right">
+        <nz-icon nzType="shopping" />
+        <span>商品管理</span>
+      </li>
+      <li nz-menu-item
+        [matTooltip]="isCollapsed ? '訂單管理' : ''" matTooltipPosition="right">
+        <nz-icon nzType="solution" />
+        <span>訂單管理</span>
+      </li>
+      <li nz-menu-item
+        [matTooltip]="isCollapsed ? '品質檢測管理' : ''" matTooltipPosition="right">
+        <nz-icon nzType="audit" />
+        <span>品質檢測管理</span>
       </li>
     </ul>
   </nz-sider>
   <nz-layout>
-    <nz-header>
-      <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-            <span class="trigger"
-               nz-icon
-               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-            ></span>
-        </span>
+    <nz-header >
+      <div class="header-content">
+        <div class="header-logo" *ngIf="isCollapsed">
+          <img src="/img/icon.png" alt="logo" height="50" width="70" />
+        </div>
+        <div class="header-right">
+        </div>
       </div>
     </nz-header>
     <nz-content>

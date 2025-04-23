@@ -6,7 +6,7 @@
 }
 
 .app-layout {
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .menu-sidebar {
@@ -18,7 +18,6 @@
 
 .header-trigger {
   height: 64px;
-  padding: 20px 24px;
   font-size: 20px;
   cursor: pointer;
   transition: all .3s,padding 0s;
@@ -31,27 +30,25 @@
 .sidebar-logo {
   position: relative;
   height: 64px;
-  padding-left: 24px;
+  padding-left: 8px;
   overflow: hidden;
   line-height: 64px;
-  background: #001529;
   transition: all .3s;
 }
 
 .sidebar-logo img {
   display: inline-block;
-  height: 32px;
-  width: 32px;
+  height: 50px;
+  width: 72px;
   vertical-align: middle;
+  margin-bottom: 12px;
+  margin-left: -5px;
 }
 
 .sidebar-logo h1 {
   display: inline-block;
-  margin: 0 0 0 20px;
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
+  margin: 0 0 0 10px;
+  font-size: 18px;
   vertical-align: middle;
 }
 
@@ -59,6 +56,7 @@ nz-header {
   padding: 0;
   width: 100%;
   z-index: 2;
+  background: #fff;
 }
 
 .app-header {
@@ -78,3 +76,14 @@ nz-content {
   background: #fff;
   height: 100%;
 }
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 16px;
+
+}
+
+

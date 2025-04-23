@@ -1,1 +1,38 @@
-<p>welcome works!</p>
+<div nz-col nzSpan="24" style="padding-bottom: 50px">
+  <nz-row [nzGutter]="24">
+    <nz-col [nzSpan]="6">
+      <nz-card>
+        <nz-statistic [nzValue]="(11 | number)!" nzTitle="銷售量"nzPrefix="$"></nz-statistic>
+      </nz-card>
+    </nz-col>
+    <nz-col [nzSpan]="6">
+      <nz-card>
+        <nz-statistic [nzValue]="(9 | number)!" nzTitle="訂單數" nzSuffix="筆"></nz-statistic>
+      </nz-card>
+    </nz-col>
+    <nz-col [nzSpan]="6">
+      <nz-card>
+        <nz-statistic [nzValue]="(9 | number)!" nzTitle="買家評價" nzSuffix="個"></nz-statistic>
+      </nz-card>
+    </nz-col>
+    <nz-col [nzSpan]="6">
+      <nz-card>
+        <nz-statistic [nzValue]="(9 | number)!" nzTitle="客單價" nzPrefix="$"></nz-statistic>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</div>
+<div nz-col nzSpan="24">
+  <nz-row [nzGutter]="24">
+    <nz-col [nzSpan]="12">
+      <nz-card nzTitle="各商品銷售量">
+        <div echarts [options]="barOptions" class="echart" *ngIf="isBrowser"></div>
+      </nz-card>
+    </nz-col>
+    <nz-col [nzSpan]="12">
+      <nz-card nzTitle="各類別銷售額佔比">
+        <div echarts [options]="pieOptions" class="echart" *ngIf="isBrowser"></div>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</div>
