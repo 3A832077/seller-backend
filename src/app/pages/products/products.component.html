@@ -1,1 +1,56 @@
-<p>products works!</p>
+<div nz-row class="header-container">
+  <button nz-button nzType="primary" (click)="openModal()">
+    <nz-icon nzType="plus" nzTheme="outline"></nz-icon>
+    <span>新增商品</span>
+  </button>
+</div>
+<nz-table #filterTable
+          [nzData]="displayedList"
+          [nzTotal]="total"
+          [nzPageSize]="pageSize"
+          [nzPageIndex]="pageIndex"
+          [nzLoading]="loading"
+          [nzShowTotal]="totalTemplate"
+          nzShowSizeChanger
+          nzFrontPagination="false"
+          ngSkipHydration>
+  <thead>
+    <tr>
+      <th nzAlign="center">圖片</th>
+      <th nzAlign="center">商品名稱</th>
+      <th nzAlign="center">商品類別</th>
+      <th nzAlign="center">價格</th>
+      <th nzAlign="center">庫存</th>
+      <th nzAlign="center">說明</th>
+      <th nzAlign="center">狀態</th>
+      <th nzAlign="center">操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of filterTable.data">
+      <td nzAlign="center">
+        <img [src]="data.pictrue" width="70px" height="50px" />
+      </td>
+      <td nzAlign="center">{{ data.name }}</td>
+      <td nzAlign="center">{{ data.category }}</td>
+      <td nzAlign="center">{{ data.price }}</td>
+      <td nzAlign="center">{{ data.stock }}</td>
+      <td nzAlign="center">{{ data.info }}</td>
+      <td nzAlign="center">
+        <span *ngIf="data.status">上架</span>
+        <span *ngIf="!data.status">下架</span>
+      </td>
+      <td nzAlign="center">
+        <button nz-button nzType="link">編輯</button>
+        <button nzType="link" nz-button>刪除</button>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+<ng-template #totalTemplate>
+  總共 {{ total }} 筆
+</ng-template>
+
+
+
+

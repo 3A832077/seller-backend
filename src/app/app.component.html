@@ -15,7 +15,7 @@
         <nz-icon nzType="bar-chart" />
         <span>統計資料</span>
       </li>
-      <li nz-menu-item
+      <li nz-menu-item routerLink="/products" [nzSelected]="isActive('/products')"
           [matTooltip]="isCollapsed ? '商品管理' : ''" matTooltipPosition="right">
         <nz-icon nzType="shopping" />
         <span>商品管理</span>
@@ -36,7 +36,9 @@
     <nz-header >
       <div class="header-content">
         <div class="header-logo" *ngIf="isCollapsed">
-          <img src="/img/icon.png" alt="logo" height="50" width="70" />
+          <a routerLink="/dashboard">
+            <img src="/img/icon.png" alt="logo" height="50" width="70" />
+          </a>
         </div>
         <div class="header-right">
         </div>

@@ -1,0 +1,28 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "twice專輯",
+      "price": 100,
+      "info": "空專",
+      "pictrue": "",
+      "category": "專輯",
+      "stock": 1,
+      "status": true
+    }
+  ],
+  "category": [
+    {
+      "id": 1,
+      "name": "專輯"
+    },
+    {
+      "id": 2,
+      "name": "衣服"
+    },
+    {
+      "id": 3,
+      "name": "其他"
+    }
+  ]
+}

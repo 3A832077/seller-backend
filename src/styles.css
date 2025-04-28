@@ -5,3 +5,18 @@ html, body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.buttonDiv {
+  margin-top: 16px;
+  gap: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
