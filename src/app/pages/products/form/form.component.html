@@ -27,13 +27,13 @@
         商品類別
       </nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="17" [nzLg]="17" [nzXl]="18" [nzMd]="17">
-        <nz-select formControlName="category" nzPlaceHolder="請選擇商品類別" style="width: 100%;">
+        <nz-select formControlName="category" nzPlaceHolder="請選擇商品類別" style="width: 100%;" nzShowSearch nzAllowClear>
           <nz-option *ngFor="let category of categoryList" [nzValue]="category.id" [nzLabel]="category.name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24">
+  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
     <nz-form-item>
       <nz-form-label [nzSm]="5" [nzXs]="5" [nzLg]="5" [nzXl]="4" [nzMd]="5" nzFor="price">
         商品價格
@@ -69,9 +69,9 @@
         商品狀態
       </nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="17" [nzLg]="17" [nzXl]="18" [nzMd]="17">
-        <nz-radio-group >
-          <label nz-radio nzValue="true">上架</label>
-          <label nz-radio nzValue="false">下架</label>
+        <nz-radio-group formControlName="status">
+          <label nz-radio [nzValue]=true>上架</label>
+          <label nz-radio [nzValue]=false>下架</label>
         </nz-radio-group>
       </nz-form-control>
     </nz-form-item>

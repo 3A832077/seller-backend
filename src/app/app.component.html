@@ -1,4 +1,4 @@
-<nz-layout class="app-layout">
+<nz-layout >
   <nz-sider class="menu-sidebar" nzCollapsible nzWidth="200px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzTheme="light">
     <div class="sidebar-logo">
       <span class="header-trigger" (click)="isCollapsed = !isCollapsed"
@@ -49,5 +49,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
+    <nz-footer>©2025</nz-footer>
   </nz-layout>
 </nz-layout>

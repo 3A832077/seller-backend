@@ -50,26 +50,30 @@ export class ProductsComponent implements OnInit {
     this.productsService.getProducts().pipe(
       tap((res) => {
         this.displayedList = res;
-        this.loading = false;
       }),
-      catchError((err) => {
-        console.error(err);
+      catchError((error) => {
         this.loading = false;
+        this.displayedList = [];
+        this.total = 0;
         return EMPTY;
-      })
-    ).subscribe();
+      })).subscribe(() => {
+        this.loading = false;
+    });
   }
 
-  openModal(): void {
+  openModal(isEdit: boolean, data?: any): void {
     const modal = this.modalService.create({
-      nzTitle: '新增',
+      nzTitle: isEdit ? '編輯' : '新增',
       nzContent: FormComponent,
       nzMaskClosable: false,
       nzClosable: false,
       nzCentered: true,
       nzFooter: null,
       nzZIndex: 60,
+      nzData: data
     });
   }
+
+
 
 }

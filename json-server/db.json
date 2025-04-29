@@ -5,8 +5,8 @@
       "name": "twice專輯",
       "price": 100,
       "info": "空專",
-      "pictrue": "",
-      "category": "專輯",
+      "pictrue": "Love.jpg",
+      "category": 1,
       "stock": 1,
       "status": true
     }
@@ -22,7 +22,15 @@
     },
     {
       "id": 3,
-      "name": "其他"
+      "name": "遊戲"
+    },
+    {
+      "id": 4,
+      "name": "雜貨"
+    },
+    {
+      "id": 5,
+      "name": "書輯"
     }
   ]
 }

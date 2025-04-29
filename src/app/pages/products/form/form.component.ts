@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
@@ -10,7 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { ProductsService } from '../products.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 
@@ -27,6 +27,8 @@ import { catchError, EMPTY, tap } from 'rxjs';
 })
 export class FormComponent implements OnInit{
 
+  data = inject(NZ_MODAL_DATA) || undefined;
+
   form: FormGroup = new FormGroup({});
 
   fileList: NzUploadFile[] = [];
@@ -42,13 +44,13 @@ export class FormComponent implements OnInit{
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      name: [null],
-      price: [null],
-      info: [null],
-      category: [null],
-      stock: [null],
-      status: [null],
-      picture: [null],
+      name: [this.data?.name || null],
+      price: [this.data?.price || null],
+      info: [this.data?.info || null],
+      category: [this.data?.category || 1],
+      stock: [this.data?.stock || null],
+      picture: [this.data?.picture || null],
+      status: [this.data?.status || true],
     });
     this.getCategory();
   }
