@@ -20,7 +20,7 @@
         <nz-icon nzType="shopping" />
         <span>商品管理</span>
       </li>
-      <li nz-menu-item
+      <li nz-menu-item routerLink="/orders" [nzSelected]="isActive('/orders')"
         [matTooltip]="isCollapsed ? '訂單管理' : ''" matTooltipPosition="right">
         <nz-icon nzType="solution" />
         <span>訂單管理</span>

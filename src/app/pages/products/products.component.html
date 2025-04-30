@@ -16,7 +16,7 @@
           ngSkipHydration>
   <thead>
     <tr>
-      <th nzAlign="center">圖片</th>
+      <!-- <th nzAlign="center">圖片</th> -->
       <th nzAlign="center">商品名稱</th>
       <th nzAlign="center">商品類別</th>
       <th nzAlign="center">價格</th>
@@ -28,11 +28,11 @@
   </thead>
   <tbody>
     <tr *ngFor="let data of filterTable.data">
-      <td nzAlign="center">
+      <!-- <td nzAlign="center">
         <img src="/img/{{data.pictrue}}" width="70px" height="50px" />
-      </td>
+      </td> -->
       <td nzAlign="center">{{ data.name }}</td>
-      <td nzAlign="center">{{ data.category }}</td>
+      <td nzAlign="center">{{ data.categoryName }}</td>
       <td nzAlign="center">{{ data.price }}</td>
       <td nzAlign="center">{{ data.stock }}</td>
       <td nzAlign="center">{{ data.info }}</td>
@@ -42,7 +42,7 @@
       </td>
       <td nzAlign="center">
         <button nz-button nzType="link" (click)="openModal(true, data)">編輯</button>
-        <button nzType="link" nz-button>刪除</button>
+        <button nzType="link" nz-button (click)="deleteProduct(data.id)">刪除</button>
       </td>
     </tr>
   </tbody>

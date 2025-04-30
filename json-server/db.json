@@ -1,14 +1,13 @@
 {
   "products": [
     {
-      "id": 1,
       "name": "twice專輯",
       "price": 100,
       "info": "空專",
-      "pictrue": "Love.jpg",
       "category": 1,
       "stock": 1,
-      "status": true
+      "status": true,
+      "id": "a305"
     }
   ],
   "category": [
@@ -32,5 +31,8 @@
       "id": 5,
       "name": "書輯"
     }
+  ],
+  "orders":[
+
   ]
 }

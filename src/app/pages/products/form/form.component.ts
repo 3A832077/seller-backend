@@ -39,7 +39,7 @@ export class FormComponent implements OnInit{
                 private fb: FormBuilder,
                 private message: NzMessageService,
                 private modal: NzModalRef,
-                private productsService: ProductsService
+                private productsService: ProductsService,
               ){}
 
   ngOnInit(): void {
@@ -49,16 +49,15 @@ export class FormComponent implements OnInit{
       info: [this.data?.info || null],
       category: [this.data?.category || 1],
       stock: [this.data?.stock || null],
-      picture: [this.data?.picture || null],
       status: [this.data?.status || true],
     });
     this.getCategory();
   }
 
-  beforeUpload = (file: NzUploadFile): boolean => {
-    this.fileList = this.fileList.concat(file);
-    return false;
-  };
+  // beforeUpload = (file: NzUploadFile): boolean => {
+  //   this.fileList = this.fileList.concat(file);
+  //   return false;
+  // };
 
   /**
    * 關閉新增/編輯modal
@@ -67,6 +66,9 @@ export class FormComponent implements OnInit{
     this.modal.destroy();
   }
 
+  /**
+   * 取得所有產品類別
+   */
   getCategory(){
     this.productsService.getCategories().pipe(
       tap((res) => {
@@ -78,4 +80,33 @@ export class FormComponent implements OnInit{
       })
     ).subscribe();
   }
+
+  /**
+   * 新增/編輯產品
+   */
+  sumbit() {
+    const params: any = {
+      name: this.form.value.name,
+      price: Number(this.form.value.price),
+      info: this.form.value.info,
+      category: this.form.value.category,
+      stock: Number(this.form.value.stock),
+      status: this.form.value.status,
+    }
+    const res = this.data ? this.productsService.editProduct(this.data.id, params) : this.productsService.addProduct(params);
+    res.pipe(
+      tap((res) => {
+        this.message.success(this.data ? '編輯成功' : '新增成功');
+        this.modal.close('success');
+      }),
+      catchError((err) => {
+        this.message.error(this.data ? '編輯失敗' : '新增失敗');
+        console.error(err);
+        return EMPTY;
+      })
+    ).subscribe();
+  }
+
+
+
 }

@@ -36,19 +36,44 @@ export class ProductsComponent implements OnInit {
 
   loading: boolean = false;
 
+  categoryList: any[] = [];
+
   constructor(
                 private modalService: NzModalService,
                 private productsService: ProductsService
              ) { }
 
   ngOnInit(): void {
-    this.getProducts();
+    this.getCategory();
   }
 
+  /**
+   * 取得產品類別
+   */
+  getCategory(){
+    this.productsService.getCategories().pipe(
+      tap((res) => {
+        this.categoryList = res;
+      }),
+      catchError((err) => {
+        console.error(err);
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      this.getProducts();
+    });
+  }
+
+  /**
+   * 取得產品列表
+   */
   getProducts(): void {
     this.loading = true;
     this.productsService.getProducts().pipe(
       tap((res) => {
+        res.forEach((item: any) => {
+          item.categoryName = this.categoryList.find((category) => category.id === item.category)?.name;
+        });
         this.displayedList = res;
       }),
       catchError((error) => {
@@ -58,9 +83,14 @@ export class ProductsComponent implements OnInit {
         return EMPTY;
       })).subscribe(() => {
         this.loading = false;
-    });
+      });
   }
 
+  /**
+   * 新增/編輯產品
+   * @param isEdit 是否為編輯
+   * @param data
+   */
   openModal(isEdit: boolean, data?: any): void {
     const modal = this.modalService.create({
       nzTitle: isEdit ? '編輯' : '新增',
@@ -71,6 +101,32 @@ export class ProductsComponent implements OnInit {
       nzFooter: null,
       nzZIndex: 60,
       nzData: data
+    });
+    modal.afterClose.subscribe((res: any) => {
+      if (res === 'success' ){
+        this.getProducts();
+      }
+    });
+  }
+
+  /**
+   * 刪除產品
+   * @param id
+   */
+  deleteProduct(id: string): void {
+    this.modalService.confirm({
+      nzTitle: '確定要刪除嗎?',
+      nzOnOk: () => {
+        this.productsService.deleteProduct(id).pipe(
+          tap(() => {
+            this.getProducts();
+          }),
+          catchError((err) => {
+            console.error(err);
+            return EMPTY;
+          })
+        ).subscribe();
+      }
     });
   }
 
