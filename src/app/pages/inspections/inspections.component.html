@@ -1,0 +1,54 @@
+<div nz-row class="header-container">
+  <button nz-button nzType="primary" (click)="openModal()">
+    <nz-icon nzType="plus" nzTheme="outline"></nz-icon>
+    <span>申請品質檢定</span>
+  </button>
+</div>
+<nz-table #filterTable
+          [nzData]="displayedList"
+          [nzTotal]="total"
+          [nzPageSize]="pageSize"
+          [nzPageIndex]="pageIndex"
+          [nzLoading]="loading"
+          [nzShowTotal]="totalTemplate"
+          nzShowSizeChanger
+          nzFrontPagination="false"
+          ngSkipHydration>
+  <thead>
+    <tr>
+      <th>商品名稱</th>
+      <th>類別</th>
+      <th>是否通過</th>
+      <th>是否優良</th>
+      <th>鑑定日期</th>
+      <th>檢測連結</th>
+      <th>檢測情形</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of filterTable.data">
+      <td>{{ item.product }}</td>
+      <td>{{ item.category }}</td>
+      <td>
+        {{ item.pass === '1' ? '通過' : '未通過' }}
+      </td>
+      <td>
+        {{ item.perfect === '1' ? '優良' : '非優良' }}
+      </td>
+      <td>{{ item.date }}</td>
+      <td>
+        <a *ngIf="item.url !== '1'" [href]="item.url" target="_blank">前往檢測</a>
+      </td>
+      <td>
+        <ng-container *ngIf="item.url === '1'; else notCompleted">已完成</ng-container>
+        <ng-template #notCompleted>
+          <a >取消檢測</a>
+        </ng-template>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+<ng-template #totalTemplate>
+  總共 {{ total }} 筆
+</ng-template>
+

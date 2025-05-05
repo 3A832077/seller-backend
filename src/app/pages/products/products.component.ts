@@ -9,7 +9,6 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { catchError, EMPTY, tap } from 'rxjs';
-import { RouterOutlet, RouterLink } from '@angular/router';
 import { FormComponent } from './form/form.component';
 import { ProductsService } from './products.service';
 
@@ -19,7 +18,7 @@ import { ProductsService } from './products.service';
               CommonModule, NzTableModule, NzButtonModule,
               NzModalModule, NzDividerModule, NzFormModule,
               NzInputModule, FormsModule, ReactiveFormsModule,
-              NzIconModule, RouterOutlet, RouterLink
+              NzIconModule
            ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
@@ -72,7 +71,7 @@ export class ProductsComponent implements OnInit {
     this.productsService.getProducts().pipe(
       tap((res) => {
         res.forEach((item: any) => {
-          item.categoryName = this.categoryList.find((category) => category.id === item.category)?.name;
+          item.categoryName = this.categoryList.find((category) => Number(category.id) === Number(item.category))?.name;
         });
         this.displayedList = res;
       }),

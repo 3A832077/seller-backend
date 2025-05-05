@@ -10,22 +10,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { RouterOutlet, RouterLink } from '@angular/router';
-import { OrdersService } from './orders.service';
-import { NzRateModule } from 'ng-zorro-antd/rate';
+import { InspectionsService } from './inspections.service';
+import { FormComponent } from './form/form.component';
 
 @Component({
-  selector: 'app-orders',
+  selector: 'app-inspections',
   imports: [
               CommonModule, NzTableModule, NzButtonModule,
               NzModalModule, NzDividerModule, NzFormModule,
               NzInputModule, FormsModule, ReactiveFormsModule,
-              NzIconModule, RouterOutlet, RouterLink,
-              NzRateModule
+              NzIconModule, RouterOutlet, RouterLink
            ],
-  templateUrl: './orders.component.html',
-  styleUrl: './orders.component.css'
+  templateUrl: './inspections.component.html',
+  styleUrl: './inspections.component.css'
 })
-export class OrdersComponent implements OnInit {
+export class InspectionsComponent implements OnInit {
 
   displayedList: any[] = [];
 
@@ -37,32 +36,20 @@ export class OrdersComponent implements OnInit {
 
   loading: boolean = false;
 
-  statusMap: any = {
-    '0': '新成立',
-    '1': '確認',
-    '2': '備貨中',
-    '3': '已出貨',
-    '4': '已送達',
-    '5': '已完成',
-    '6': '退貨中',
-    '7': '已取消',
-  };
+  meetUrl: string = '';
 
   constructor(
                 private modalService: NzModalService,
-                private ordersService: OrdersService,
+                private inspectionsService: InspectionsService,
               ) { }
 
   ngOnInit(): void {
-    this.getOrders();
+    this.getInspections();
   }
 
-  /**
-   * 取得訂單列表
-   */
-  getOrders() {
+  getInspections() {
     this.loading = true;
-    this.ordersService.getOrders().pipe(
+    this.inspectionsService.getInspections().pipe(
       tap((res) => {
         this.displayedList = res;
       }),
@@ -75,7 +62,17 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-
+  openModal(){
+    const modal = this.modalService.create({
+      nzTitle: '新增',
+      nzContent: FormComponent,
+      nzMaskClosable: false,
+      nzClosable: false,
+      nzCentered: true,
+      nzFooter: null,
+      nzZIndex: 60,
+    });
+  }
 
 
 

@@ -25,7 +25,7 @@
         <nz-icon nzType="solution" />
         <span>訂單管理</span>
       </li>
-      <li nz-menu-item
+      <li nz-menu-item routerLink="/inspections" [nzSelected]="isActive('/inspections')"
         [matTooltip]="isCollapsed ? '品質檢測管理' : ''" matTooltipPosition="right">
         <nz-icon nzType="audit" />
         <span>品質檢測管理</span>

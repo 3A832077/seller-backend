@@ -25,8 +25,15 @@ export class OrdersService {
   /**
    * 編輯訂單狀態
    */
-  editOrderStatus(id: string, data: any): Observable<any> {
+  editOrder(id: string, data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, data);
+  }
+
+  /**
+   * 編輯訂單評價
+   */
+  editOrderRate(id: string, data: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}`, data);
   }
 
 }
