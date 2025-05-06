@@ -5,6 +5,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AuthService } from './pages/auth.service';
 
 @Component({
     selector: 'app-root',
@@ -18,13 +19,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class AppComponent implements OnInit {
 
+  isCollapsed = false;
+
+  meetUrl = '';
+
   constructor(
-                private router: Router
+                private router: Router,
+                private auth: AuthService,
               ) { }
   ngOnInit() {
   }
-
-  isCollapsed = false;
 
   /**
   * 僅當前路徑完全相等時返回 true
@@ -33,6 +37,10 @@ export class AppComponent implements OnInit {
   */
   isActive(url: string): boolean {
     return this.router.url === url;
+  }
+
+  createMeeting() {
+    this.auth.createEvent();
   }
 
 }
