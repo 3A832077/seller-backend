@@ -6,13 +6,14 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from './pages/auth.service';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
     selector: 'app-root',
     imports: [
                 CommonModule, RouterLink, RouterOutlet,
                 NzIconModule, NzLayoutModule, NzMenuModule,
-                MatTooltipModule
+                MatTooltipModule, NzButtonModule
              ],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
@@ -25,7 +26,7 @@ export class AppComponent implements OnInit {
 
   constructor(
                 private router: Router,
-                private auth: AuthService,
+                public auth: AuthService,
               ) { }
   ngOnInit() {
   }
@@ -39,8 +40,5 @@ export class AppComponent implements OnInit {
     return this.router.url === url;
   }
 
-  createMeeting() {
-    this.auth.createEvent();
-  }
 
 }

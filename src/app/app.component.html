@@ -34,14 +34,16 @@
   </nz-sider>
   <nz-layout>
     <nz-header >
-      <div class="header-content">
+      <div class="header-content" [ngStyle]="{'justify-content': isCollapsed ? 'space-between' : 'flex-end'}">
         <div class="header-logo" *ngIf="isCollapsed">
           <a routerLink="/dashboard">
             <img src="/img/icon.png" alt="logo" height="50" width="70" />
           </a>
         </div>
-        <div class="header-right">
-          <button (click)="createMeeting()">建立會議</button>
+        <div >
+          <button nz-button nzType="link" (click)="auth.isLoggedIn() ? auth.logout() : auth.signIn()">
+            {{ auth.isLoggedIn() ? '登出' : '登入'}}
+          </button>
         </div>
       </div>
     </nz-header>

@@ -74,10 +74,16 @@ export class AuthService {
   }
 
   /**
-   * 登入並建立會議
+   * 觸發登入畫面
    */
-  signInAndCreateMeeting() {
-    if (!this.tokenClient) return;
+  signIn() {
+    if (!this.tokenClient) {
+      this.loadGoogleSdk().then(() => {
+        this.initGoogleOAuth();
+        this.tokenClient.requestAccessToken();
+      });
+      return;
+    }
     this.tokenClient.requestAccessToken();
   }
 
@@ -87,8 +93,10 @@ export class AuthService {
    */
   createEvent() {
 
-    if (this.isExpired){
-      this.signInAndCreateMeeting();
+    const expiresAt = parseInt(localStorage.getItem('expires_at') || '0');
+    const isTokenExpired = Date.now() >= expiresAt;
+    if (!this.accessToken || isTokenExpired) {
+      this.signIn();
       return;
     }
 
@@ -129,4 +137,24 @@ export class AuthService {
     )
     return meetLink;
   }
+
+  public isLoggedIn(): boolean {
+    let savedToken = null;
+    let expiresAt = null;
+    if (typeof window !== 'undefined') {
+      savedToken = localStorage.getItem('accessToken');
+      expiresAt = localStorage.getItem('expires_at');
+    }
+    return !!savedToken && !!expiresAt && Date.now() < parseInt(expiresAt);
+  }
+
+  public logout() {
+    this.accessToken = '';
+    this.isExpired = true;
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('expires_at');
+    console.log('使用者已登出');
+  }
+
+
 }
