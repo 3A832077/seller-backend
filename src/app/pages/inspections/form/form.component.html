@@ -1,18 +1,20 @@
 <form [formGroup]="form">
   <div nz-col nzSpan="24" style="padding-bottom: 10px;">
     <nz-form-item>
-      <nz-form-label [nzSpan]="4">商品名稱</nz-form-label>
-      <nz-form-control [nzSpan]="18">
-        <input nz-input formControlName="product" placeholder="請輸入商品"/>
-      </nz-form-control>
-    </nz-form-item>
-  </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
-    <nz-form-item>
       <nz-form-label [nzSpan]="4">商品類別</nz-form-label>
       <nz-form-control [nzSpan]="18">
         <nz-select formControlName="category" nzPlaceHolder="請選擇商品類別" nzShowSearch nzAllowClear>
           <nz-option *ngFor="let category of categoryList" [nzValue]="category.id" [nzLabel]="category.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div nz-col nzSpan="24" style="padding-bottom: 10px;" *ngIf="form.get('category')?.value">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">商品名稱</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <nz-select formControlName="product" nzPlaceHolder="請選擇產品" nzShowSearch nzAllowClear>
+          <nz-option *ngFor="let product of selectedProducts" [nzValue]="product" [nzLabel]="product"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -37,13 +39,61 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
+  <div nz-col nzSpan="24" style="padding-bottom: 10px;" *ngIf="form.get('time')?.value">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">詳細時間</nz-form-label>
       <nz-form-control [nzSpan]="18">
         <nz-select formControlName="detailTime" nzPlaceHolder="請選擇詳細時間" nzShowSearch nzAllowClear>
-          <!-- <nz-option *ngFor="let detailTime of detailTimeList" [nzLabel]="detailTime.label" [nzValue]="detailTime.value"></nz-option> -->
+          <nz-option *ngFor="let detail of detailTimeList" [nzLabel]="detail.label" [nzValue]="detail.value"></nz-option>
         </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">信用卡號</nz-form-label>
+        <nz-form-control [nzSpan]="18">
+          <nz-input-group >
+            <div nz-row [nzGutter]="4">
+              <div nz-col [nzSpan]="6">
+                <input nz-input formControlName="cardPart1" maxlength="4" class="cardInput"
+                (input)="autoFocusNext($event, 'cardPart2')"  />
+              </div>
+              <div nz-col [nzSpan]="6">
+                <input nz-input formControlName="cardPart2" maxlength="4" class="cardInput"
+                (input)="autoFocusNext($event, 'cardPart3')"/>
+              </div>
+              <div nz-col [nzSpan]="6">
+                <input nz-input formControlName="cardPart3" maxlength="4" class="cardInput"
+                (input)="autoFocusNext($event, 'cardPart4')"/>
+              </div>
+              <div nz-col [nzSpan]="6">
+                <input nz-input formControlName="cardPart4" maxlength="4" class="cardInput"
+                (input)="autoFocusNext($event, '')"/>
+              </div>
+            </div>
+            <div *ngIf="cardError" style="top: 15px;position: relative;color: red;">
+              <span >{{ cardError }}</span>
+            </div>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+  </div>
+  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">到期日</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <nz-date-picker formControlName="expiryDate" nzFormat="MM/YYYY" nzPicker="month"
+          nzPlaceHolder="請選擇到期日">
+        </nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">安全碼</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <input nz-input formControlName="cvv" maxlength="3" style="width: 80px"/>
       </nz-form-control>
     </nz-form-item>
   </div>
@@ -52,5 +102,4 @@
     <button nz-button nzType="primary" type="submit">新增</button>
     <button nz-button nzType="default" (click)="close()">取消</button>
   </div>
-
 </form>
