@@ -13,6 +13,8 @@
           [nzShowTotal]="totalTemplate"
           nzShowSizeChanger
           nzFrontPagination="false"
+          (nzPageIndexChange)="getProducts($event, pageSize)"
+          (nzPageSizeChange)="getProducts(pageIndex, $event)"
           ngSkipHydration>
   <thead>
     <tr>

@@ -66,14 +66,19 @@ export class ProductsComponent implements OnInit {
   /**
    * 取得產品列表
    */
-  getProducts(): void {
+  getProducts(pageIndex: number = 1, pageSize: number = 10): void {
+    const params = {
+      _page: pageIndex,
+      _limit: pageSize
+    };
     this.loading = true;
-    this.productsService.getProducts().pipe(
+    this.productsService.getProducts(params).pipe(
       tap((res) => {
         res.forEach((item: any) => {
           item.categoryName = this.categoryList.find((category) => Number(category.id) === Number(item.category))?.name;
         });
         this.displayedList = res;
+        this.total = res.length;
       }),
       catchError((error) => {
         this.loading = false;

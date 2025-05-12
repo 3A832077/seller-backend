@@ -22,4 +22,12 @@ export class InspectionsService {
     return this.http.get(this.apiUrl);
   }
 
+  /**
+   * 新增檢查項目
+   * @param data
+   * @returns
+   */
+  addInspection(data: any): Observable<any> {
+    return this.http.post(this.apiUrl, data);
+  }
 }

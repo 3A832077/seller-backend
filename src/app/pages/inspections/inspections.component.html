@@ -22,7 +22,6 @@
       <th>是否優良</th>
       <th>鑑定日期</th>
       <th>檢測連結</th>
-      <th>檢測情形</th>
     </tr>
   </thead>
   <tbody>
@@ -30,20 +29,22 @@
       <td>{{ item.product }}</td>
       <td>{{ item.category }}</td>
       <td>
-        {{ item.pass === '1' ? '通過' : '未通過' }}
+        <ng-container *ngIf="item.pass">
+          <ng-container *ngIf="item.pass === 1; else notPass">通過</ng-container>
+          <ng-template #notPass>不通過</ng-template>
+        </ng-container>
       </td>
       <td>
-        {{ item.perfect === '1' ? '優良' : '非優良' }}
+        <ng-container *ngIf="item.excellent">
+          <ng-container *ngIf="item.excellent === 1; else notExcellent">優良</ng-container>
+          <ng-template #notExcellent>非優良</ng-template>
+        </ng-container>
       </td>
       <td>{{ item.date }}</td>
       <td>
-        <a *ngIf="item.url !== '1'" [href]="item.url" target="_blank">前往檢測</a>
-      </td>
-      <td>
-        <ng-container *ngIf="item.url === '1'; else notCompleted">已完成</ng-container>
-        <ng-template #notCompleted>
-          <a >取消檢測</a>
-        </ng-template>
+        <ng-container *ngIf="item.url">
+          <a [href]="item.url" target="_blank">檢測連結</a>
+        </ng-container>
       </td>
     </tr>
   </tbody>

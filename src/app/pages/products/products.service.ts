@@ -20,8 +20,8 @@ export class ProductsService {
    * 取得所有產品
    * @returns
    */
-  getProducts(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getProducts(params: any): Observable<any> {
+    return this.http.get(this.apiUrl, { params });
   }
 
   /**

@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -12,6 +12,12 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { ProductsService } from '../../products/products.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { InspectionsService } from '../inspections.service';
+import { AuthService } from '../../auth.service';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { env } from '../../../env/env';
+import { checkCardNumberValidator } from '../../validator/checkCradNumber';
+import { checkExpireDateValidator } from '../../validator/checkExpireDate';
 
 @Component({
   selector: 'inspections-form',
@@ -38,16 +44,18 @@ export class FormComponent implements OnInit{
 
   selectedProducts: any[] = [];
 
-  cardError: string | null = null; // 錯誤訊息
+  cardError: string | null = null;
+
+  meetUrl: string = '';
 
   timeList: any[] = [
-    { label: '09:00 - 10:00', value: '9-10' },
-    { label: '10:00 - 11:00', value: '10-11' },
-    { label: '11:00 - 12:00', value: '11-12' },
-    { label: '13:00 - 14:00', value: '13-14' },
-    { label: '14:00 - 15:00', value: '14-15' },
-    { label: '15:00 - 16:00', value: '15-16' },
-    { label: '16:00 - 17:00', value: '16-17' },
+    { label: '09:00 - 10:00' },
+    { label: '10:00 - 11:00' },
+    { label: '11:00 - 12:00' },
+    { label: '13:00 - 14:00' },
+    { label: '14:00 - 15:00' },
+    { label: '15:00 - 16:00' },
+    { label: '16:00 - 17:00' },
   ]
 
   constructor(
@@ -55,58 +63,75 @@ export class FormComponent implements OnInit{
                 private message: NzMessageService,
                 private modal: NzModalRef,
                 private productsService: ProductsService,
+                private inspectionsService: InspectionsService,
+                private authService: AuthService,
+                private http: HttpClient,
               ){}
 
   ngOnInit(): void {
     this.form = this.fb.group({
+      name: [null],
       product: [null],
       category: [null],
       date: [null],
       time: [null],
       detailTime: [null],
-      cardPart1: ['', [Validators.pattern('^[0-9]{4}$')]],
-      cardPart2: ['', [Validators.pattern('^[0-9]{4}$')]],
-      cardPart3: ['', [Validators.pattern('^[0-9]{4}$')]],
-      cardPart4: ['', [Validators.pattern('^[0-9]{4}$')]],
-      expiryDate: [null],
-      cvv: ['', [Validators.pattern('\\d{3}')]],
+      cardNumber: ['', [checkCardNumberValidator]],
+      expiryDate: [null, [checkExpireDateValidator]],
+      csv: ['', [Validators.pattern('^\\d{3}$')]],
     });
     this.generateWeekList();
     this.getCategory();
+  }
 
-    // 監聽時段選擇的變化
-    this.form.get('time')?.valueChanges.subscribe((selectedTime) => {
-      const timeSlot = this.timeList.find((time) => time.value === selectedTime);
-      if (timeSlot) {
-        const [start, end] = timeSlot.label.split('-');
-        this.generateDetailTime(start, end);
-      }
-      else {
-        this.detailTimeList = []; // 清空詳細時間列表
-      }
-    });
+  /**
+   * 監聽時間選擇的變化
+   * @param event
+   */
+  timeChange(event: any): void {
+    if (event) {
+      // 清除已選的詳細時間
+      this.form.get('detailTime')?.setValue(null);
 
-    // 監聽類別選擇的變化
-    this.form.get('category')?.valueChanges.subscribe((selectedCategoryId) => {
-      const selectedCategory = this.productList.find(
-        (category) => category.categoryId === selectedCategoryId
-      );
-      this.selectedProducts = selectedCategory ? selectedCategory.products : [];
-    });
+      const [start, end] = event.split(' - ');
+      this.generateDetailTime(start, end);
+    }
+    else {
+      this.detailTimeList = [];
+      this.form.get('detailTime')?.setValue(null);
+    }
+  }
+
+  /**
+   * 監聽類別選擇的變化
+   * @param event
+   */
+  categoryChange(event: any): void {
+    if (event) {
+      this.form.get('product')?.setValue(null);
+      this.selectedProducts = this.productList.filter((e: any) => e.category === event).flatMap((e: any) => e.products);
+    }
+    else {
+      this.selectedProducts = [];
+      this.form.get('product')?.setValue(null);
+    }
   }
 
   /**
    * 取得產品列表
    */
   getProducts() {
-    this.productsService.getProducts().pipe(
+    const params = {
+      _page: 1,
+      _limit: 1000
+    };
+    this.productsService.getProducts(params).pipe(
       tap((res) => {
-        const originalList = res; // 保存原始產品列表
-        this.productList = this.categoryList.map((category) => {
-          const name = originalList.filter((e: any) =>
-            e.category.toString() === category.id).map((e: any) => e.name);
+        const originalList = res;
+        this.productList = this.categoryList.map((category: any) => {
+          const name = originalList.filter((e: any) => e.category.toString() === category.id.toString())
+            .map((e: any) => e.name);
             return {
-              categoryId: category.id,
               category: category.name,
               products: name,
             };
@@ -152,7 +177,7 @@ export class FormComponent implements OnInit{
       const date = new Date(today);
       date.setDate(today.getDate() + i);
 
-      const mmdd = `${date.getFullYear()}/${this.pad(date.getMonth() + 1)}/${this.pad(date.getDate())}`;
+      const mmdd = `${date.getFullYear()}-${this.pad(date.getMonth() + 1)}-${this.pad(date.getDate())}`;
       const weekday = weekdays[date.getDay()];
 
       this.weekList.push({
@@ -162,6 +187,10 @@ export class FormComponent implements OnInit{
     }
   }
 
+  /**
+   * 補零
+   * @param n
+   */
   pad(n: number): string {
     return n < 10 ? '0' + n : n.toString();
   }
@@ -174,16 +203,15 @@ export class FormComponent implements OnInit{
   private generateDetailTime(start: string, end: string): void {
     const startTime = this.parseTime(start);
     const endTime = this.parseTime(end);
-    const interval = 15; // 15 分鐘間隔
     const times: { label: string; value: string }[] = [];
 
     let currentTime = startTime;
     while (currentTime < endTime) {
       times.push({
-        label: this.formatTime(currentTime), // 單個時間點
+        label: this.formatTime(currentTime),
         value: this.formatTime(currentTime),
       });
-      currentTime = new Date(currentTime.getTime() + interval * 60000); // 加 15 分鐘
+      currentTime = new Date(currentTime.getTime() + 15 * 60000); // 加 15 分鐘
     }
 
     this.detailTimeList = times;
@@ -209,98 +237,99 @@ export class FormComponent implements OnInit{
   }
 
   /**
-   * 自動聚焦到下一個輸入框
-   * @param event
-   * @param nextField
+   * 提交表單
    */
-  autoFocusNext(event: Event, nextField: string): void {
-    const input = event.target as HTMLInputElement;
+  submit(): void {
+    if (this.form.valid) {
+      const data = {
+        product: this.form.value.product,
+        category: this.form.value.category,
+        date: this.form.value.date,
+        detailTime: this.form.value.detailTime,
+        cardNumber: this.form.value.cardNumber,
+        expiryDate: formatDate(this.form.value.expiryDate, 'MM/YYYY', 'zh-TW'),
+        csv: this.form.value.csv,
+        url: this.meetUrl,
+      };
 
-    // 過濾非數字字符並更新表單值
-    const sanitizedValue = input.value.replace(/[^0-9]/g, '');
-    input.value = sanitizedValue;
-
-    const formControlName = input.getAttribute('formControlName');
-    if (formControlName) {
-      this.form.get(formControlName)?.setValue(sanitizedValue);
+      this.inspectionsService.addInspection(data).pipe(
+        tap((res) => {
+          this.modal.close('success');
+          this.message.success('新增成功');
+        }),
+        catchError((err) => {
+          this.message.error('新增失敗');
+          return EMPTY;
+        }
+      )).subscribe(() => {});
     }
-
-    // 自動聚焦到下一個輸入框
-    if (sanitizedValue.length === 4 && nextField) {
-      const nextInput = document.querySelector(
-        `input[formControlName="${nextField}"]`
-      ) as HTMLInputElement;
-      nextInput?.focus();
-    }
-
-    // 當最後一個輸入框完成時，驗證卡號
-    if (!nextField) {
-      const cardParts = [
-        this.form.get('cardPart1')?.value,
-        this.form.get('cardPart2')?.value,
-        this.form.get('cardPart3')?.value,
-        this.form.get('cardPart4')?.value,
-      ];
-
-      const cardNumber = cardParts.join('');
-
-      if (!this.validateCardNumber(cardNumber)) {
-        this.cardError = '無效的信用卡，請重新輸入';
-      }
-      else {
-        this.cardError = null; // 清除錯誤訊息
-      }
+    else {
+      // 表單驗證
+      Object.values(this.form.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
     }
   }
 
-  /**
- * 驗證信用卡號是否符合規則
- */
-  private validateCardNumber(cardNumber: string): boolean {
-    if (!/^\d{16}$/.test(cardNumber)) {
-      return false; // 必須是 16 位數字
-    }
-
-    // 檢查卡號開頭是否符合 VISA、Mastercard、American Express 或 JCB 的規則
-    const firstDigit = parseInt(cardNumber[0], 10);
-    const firstTwoDigits = parseInt(cardNumber.slice(0, 2), 10);
-    const firstThreeDigits = parseInt(cardNumber.slice(0, 3), 10);
-
-    if (!(firstDigit === 4 || // VISA
-        (firstDigit === 5 && firstTwoDigits >= 51 && firstTwoDigits <= 55) || // Mastercard
-        (firstDigit === 3 && ((firstThreeDigits >= 340 && firstThreeDigits <= 379) || // American Express
-         (firstThreeDigits >= 528 && firstThreeDigits <= 589)))) // JCB
-        ) {
-      return false;
-    }
-
-    // 使用 Luhn 演算法驗證卡號
-    return this.luhnCheck(cardNumber);
-  }
-
-  /**
-   * Luhn 演算法檢查卡號
+   /**
+   * 建立會議
    */
-  private luhnCheck(cardNumber: string): boolean {
-    let sum = 0;
-    let shouldDouble = false;
+  createEvent() {
+    const expiresAt = parseInt(localStorage.getItem('expires_at') || '0');
+    const accessToken = localStorage.getItem('accessToken') || '';
+    const isTokenExpired = Date.now() >= expiresAt;
 
-    for (let i = cardNumber.length - 1; i >= 0; i--) {
-      let digit = parseInt(cardNumber[i], 10);
+    const selectedDate = this.form.value.date;
+    const selectedTime = this.form.value.detailTime;
 
-      if (shouldDouble) {
-        digit *= 2;
-        if (digit > 9) {
-          digit -= 9;
+    const [hours, minutes] = selectedTime.split(':').map(Number);
+    const startDateTime = new Date(selectedDate);
+    startDateTime.setHours(hours, minutes, 0, 0);
+
+    const endDateTime = new Date(startDateTime.getTime() + 30 * 60000); // 加 30 分鐘
+
+    if (!accessToken || isTokenExpired) {
+      this.authService.signIn();
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    });
+
+    const event = {
+      summary: 'test',
+      description: '123',
+      start: {
+        dateTime: startDateTime.toISOString(),
+        timeZone: 'Asia/Taipei'
+      },
+      end: {
+        dateTime: endDateTime.toISOString(),
+        timeZone: 'Asia/Taipei'
+      },
+      conferenceData: {
+        createRequest: {
+          requestId: 'meet-' + Math.random()
         }
       }
-      sum += digit;
-      shouldDouble = !shouldDouble;
-    }
+    };
 
-    return sum % 10 === 0;
+    this.http.post(env.googleApiUrl, event,{ headers }).pipe(
+      tap((response: any) => {
+        this.meetUrl = response.hangoutLink;
+        console.log('會議連結:', this.meetUrl);
+      }),
+      catchError((error) => {
+        console.error('錯誤:', error);
+        return EMPTY;
+      },)).subscribe(() => {
+        this.submit();
+      }
+    )
   }
-
-
-
 }

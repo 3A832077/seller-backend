@@ -1,3 +1,7 @@
 .cardInput{
   width: 60px;
 }
+
+.error{
+  top: 15px;position: relative;color: red;
+}

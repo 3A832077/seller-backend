@@ -67,7 +67,6 @@ export class AuthService {
           this.accessToken = resp.access_token;
           localStorage.setItem('accessToken', this.accessToken);
           localStorage.setItem('expires_at', (Date.now() + resp.expires_in * 1000).toString()); // 儲存過期時間
-          this.createEvent(); // 登入成功後直接建立事件
         }
       },
     });
@@ -87,56 +86,6 @@ export class AuthService {
     this.tokenClient.requestAccessToken();
   }
 
-  /**
-   * 建立會議
-   * @returns meetLink
-   */
-  createEvent() {
-
-    const expiresAt = parseInt(localStorage.getItem('expires_at') || '0');
-    const isTokenExpired = Date.now() >= expiresAt;
-    if (!this.accessToken || isTokenExpired) {
-      this.signIn();
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.accessToken}`,
-      'Content-Type': 'application/json'
-    });
-
-    const event = {
-      summary: 'test',
-      description: '123',
-      start: {
-        dateTime: new Date().toISOString(),
-        timeZone: 'Asia/Taipei'
-      },
-      end: {
-        dateTime: new Date(new Date().getTime() + 30 * 60000).toISOString(),
-        timeZone: 'Asia/Taipei'
-      },
-      conferenceData: {
-        createRequest: {
-          requestId: 'meet-' + Math.random()
-        }
-      }
-    };
-
-    let meetLink = '';
-
-    this.http.post(env.googleApiUrl,event,{ headers }).pipe(
-      tap((response: any) => {
-        meetLink = response.hangoutLink;
-        console.log('會議連結:', meetLink);
-      }),
-      catchError((error) => {
-        console.error('錯誤:', error);
-        return EMPTY;
-      },)).subscribe(() => {}
-    )
-    return meetLink;
-  }
 
   public isLoggedIn(): boolean {
     let savedToken = null;

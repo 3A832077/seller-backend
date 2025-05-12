@@ -3,8 +3,8 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="4">商品類別</nz-form-label>
       <nz-form-control [nzSpan]="18">
-        <nz-select formControlName="category" nzPlaceHolder="請選擇商品類別" nzShowSearch nzAllowClear>
-          <nz-option *ngFor="let category of categoryList" [nzValue]="category.id" [nzLabel]="category.name"></nz-option>
+        <nz-select formControlName="category" nzPlaceHolder="請選擇商品類別" nzShowSearch nzAllowClear (ngModelChange)="categoryChange($event)">
+          <nz-option *ngFor="let category of categoryList" [nzValue]="category.name" [nzLabel]="category.name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -33,8 +33,8 @@
     <nz-form-item>
       <nz-form-label nzSpan="4">檢測時段</nz-form-label>
       <nz-form-control [nzSpan]="18">
-        <nz-select formControlName="time" nzPlaceHolder="請選擇檢測時段" nzShowSearch nzAllowClear>
-          <nz-option *ngFor="let time of timeList" [nzLabel]="time.label" [nzValue]="time.value"></nz-option>
+        <nz-select formControlName="time" nzPlaceHolder="請選擇檢測時段" nzShowSearch nzAllowClear (ngModelChange)="timeChange($event)">
+          <nz-option *ngFor="let time of timeList" [nzLabel]="time.label" [nzValue]="time.label"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -49,57 +49,53 @@
       </nz-form-control>
     </nz-form-item>
   </div>
+  <div>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">持卡人姓名</nz-form-label>
+      <nz-form-control [nzSpan]="18">
+        <input nz-input formControlName="name" placeholder="請輸入持卡人姓名"/>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
   <div nz-col nzSpan="24" style="padding-bottom: 10px;">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">信用卡號</nz-form-label>
         <nz-form-control [nzSpan]="18">
-          <nz-input-group >
-            <div nz-row [nzGutter]="4">
-              <div nz-col [nzSpan]="6">
-                <input nz-input formControlName="cardPart1" maxlength="4" class="cardInput"
-                (input)="autoFocusNext($event, 'cardPart2')"  />
-              </div>
-              <div nz-col [nzSpan]="6">
-                <input nz-input formControlName="cardPart2" maxlength="4" class="cardInput"
-                (input)="autoFocusNext($event, 'cardPart3')"/>
-              </div>
-              <div nz-col [nzSpan]="6">
-                <input nz-input formControlName="cardPart3" maxlength="4" class="cardInput"
-                (input)="autoFocusNext($event, 'cardPart4')"/>
-              </div>
-              <div nz-col [nzSpan]="6">
-                <input nz-input formControlName="cardPart4" maxlength="4" class="cardInput"
-                (input)="autoFocusNext($event, '')"/>
-              </div>
-            </div>
-            <div *ngIf="cardError" style="top: 15px;position: relative;color: red;">
-              <span >{{ cardError }}</span>
-            </div>
-          </nz-input-group>
+          <input nz-input formControlName="cardNumber" maxlength="16" autocomplete="cc-number"/>
+          <div *ngIf="form.get('cardNumber')?.errors" class="error">
+            <span>無效的信用卡號</span>
+          </div>
         </nz-form-control>
       </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="4">到期日</nz-form-label>
-      <nz-form-control [nzSpan]="18">
-        <nz-date-picker formControlName="expiryDate" nzFormat="MM/YYYY" nzPicker="month"
-          nzPlaceHolder="請選擇到期日">
-        </nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-  </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="4">安全碼</nz-form-label>
-      <nz-form-control [nzSpan]="18">
-        <input nz-input formControlName="cvv" maxlength="3" style="width: 80px"/>
-      </nz-form-control>
-    </nz-form-item>
+  <div nz-row nzGutter="12">
+    <div nz-col nzSpan="12" style="padding-bottom: 10px;">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">到期日</nz-form-label>
+        <nz-form-control [nzSpan]="14">
+          <nz-date-picker formControlName="expiryDate" nzFormat="MM/YYYY" nzMode="month" nzPlaceHolder="請選擇到期日">
+          </nz-date-picker>
+          <div *ngIf="form.get('expiryDate')?.errors" class="error">
+            <span>這張卡已過期</span>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="12" style="padding-bottom: 10px;">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="11">安全碼</nz-form-label>
+        <nz-form-control [nzSpan]="11">
+          <input nz-input formControlName="csv" maxlength="3" style="width: 80px" type="password" autocomplete="cc-csc"/>
+          <div *ngIf="form.get('csv')?.errors" class="error">
+            <span>無效的安全碼</span>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
   </div>
   <nz-divider></nz-divider>
   <div class="buttonDiv">
-    <button nz-button nzType="primary" type="submit">新增</button>
+    <button nz-button nzType="primary" (click)="createEvent()">新增</button>
     <button nz-button nzType="default" (click)="close()">取消</button>
   </div>
 </form>

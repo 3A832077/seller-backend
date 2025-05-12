@@ -47,6 +47,9 @@ export class InspectionsComponent implements OnInit {
     this.getInspections();
   }
 
+  /**
+   * 取得檢測列表
+   */
   getInspections() {
     this.loading = true;
     this.inspectionsService.getInspections().pipe(
@@ -55,6 +58,7 @@ export class InspectionsComponent implements OnInit {
       }),
       catchError((err) => {
         console.error(err);
+        this.displayedList = [];
         return EMPTY;
       })
     ).subscribe(() => {
@@ -62,6 +66,10 @@ export class InspectionsComponent implements OnInit {
     });
   }
 
+  /**
+   * 開啟新增/編輯modal
+   * @param data 編輯資料
+   */
   openModal(){
     const modal = this.modalService.create({
       nzTitle: '新增',
@@ -71,6 +79,11 @@ export class InspectionsComponent implements OnInit {
       nzCentered: true,
       nzFooter: null,
       nzZIndex: 60,
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res === 'success') {
+        this.getInspections();
+      }
     });
   }
 
