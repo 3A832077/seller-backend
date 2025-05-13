@@ -1,5 +1,6 @@
 <nz-layout >
-  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="200px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzTheme="light">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="200px" nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzTheme="light">
     <div class="sidebar-logo">
       <span class="header-trigger" (click)="isCollapsed = !isCollapsed"
             [ngStyle]="{'padding': isCollapsed ? '20px 20px' : '20px 13px'}">
@@ -47,7 +48,7 @@
         </div>
       </div>
     </nz-header>
-    <nz-content>
+    <nz-content [ngStyle]="{'margin-left': isCollapsed ? '105px' : '225px'}">
       <div class="inner-content">
         <router-outlet></router-outlet>
       </div>

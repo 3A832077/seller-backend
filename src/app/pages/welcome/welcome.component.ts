@@ -85,10 +85,14 @@ export class WelcomeComponent implements OnInit {
 
   isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
+  constructor(
+                @Inject(PLATFORM_ID) platformId: Object
+             ) {
+                this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+
+  }
 
 }
