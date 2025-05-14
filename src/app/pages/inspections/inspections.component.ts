@@ -19,7 +19,7 @@ import { FormComponent } from './form/form.component';
               CommonModule, NzTableModule, NzButtonModule,
               NzModalModule, NzDividerModule, NzFormModule,
               NzInputModule, FormsModule, ReactiveFormsModule,
-              NzIconModule, RouterOutlet, RouterLink
+              NzIconModule
            ],
   templateUrl: './inspections.component.html',
   styleUrl: './inspections.component.css'
@@ -49,15 +49,22 @@ export class InspectionsComponent implements OnInit {
 
   /**
    * 取得檢測列表
+   * @param pageIndex
+   * @param pageSize
    */
-  getInspections() {
+  getInspections(pageIndex: number = 1, pageSize: number = 10) {
+    const params = {
+      _page: pageIndex,
+      _per_page: pageSize
+    };
     this.loading = true;
-    this.inspectionsService.getInspections().pipe(
+    this.inspectionsService.getInspections(params).pipe(
       tap((res) => {
-        this.displayedList = res;
+        this.displayedList = res.data;
+        this.total = res.items;
       }),
       catchError((err) => {
-        console.error(err);
+        this.total = 0;
         this.displayedList = [];
         return EMPTY;
       })
@@ -68,7 +75,7 @@ export class InspectionsComponent implements OnInit {
 
   /**
    * 開啟新增/編輯modal
-   * @param data 編輯資料
+   * @param data
    */
   openModal(){
     const modal = this.modalService.create({

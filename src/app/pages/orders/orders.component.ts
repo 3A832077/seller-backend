@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -19,8 +19,7 @@ import { NzRateModule } from 'ng-zorro-antd/rate';
               CommonModule, NzTableModule, NzButtonModule,
               NzModalModule, NzDividerModule, NzFormModule,
               NzInputModule, FormsModule, ReactiveFormsModule,
-              NzIconModule, RouterOutlet, RouterLink,
-              NzRateModule
+              NzIconModule, NzRateModule
            ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
@@ -49,7 +48,6 @@ export class OrdersComponent implements OnInit {
   };
 
   constructor(
-                private modalService: NzModalService,
                 private ordersService: OrdersService,
               ) { }
 
@@ -59,15 +57,23 @@ export class OrdersComponent implements OnInit {
 
   /**
    * 取得訂單列表
+   * @param pageIndex
+   * @param pageSize
    */
-  getOrders() {
+  getOrders(pageIndex: number = 1, pageSize: number = 10) {
+    const params = {
+      _page: pageIndex,
+      _per_page: pageSize
+    }
     this.loading = true;
-    this.ordersService.getOrders().pipe(
+    this.ordersService.getOrders(params).pipe(
       tap((res) => {
-        this.displayedList = res;
+        this.displayedList = res.data;
+        this.total = res.items;
       }),
       catchError((err) => {
-        console.error(err);
+        this.displayedList = [];
+        this.total = 0;
         return EMPTY;
       })
     ).subscribe(() => {

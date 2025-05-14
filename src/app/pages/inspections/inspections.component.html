@@ -13,6 +13,8 @@
           [nzShowTotal]="totalTemplate"
           nzShowSizeChanger
           nzFrontPagination="false"
+          (nzPageIndexChange)="getInspections($event, pageSize)"
+          (nzPageSizeChange)="getInspections(pageIndex, $event)"
           ngSkipHydration>
   <thead>
     <tr>

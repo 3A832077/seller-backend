@@ -7,6 +7,8 @@
           [nzShowTotal]="totalTemplate"
           nzShowSizeChanger
           nzFrontPagination="false"
+          (nzPageIndexChange)="getOrders($event, pageSize)"
+          (nzPageSizeChange)="getOrders(pageIndex, $event)"
           ngSkipHydration>
   <thead>
     <tr>

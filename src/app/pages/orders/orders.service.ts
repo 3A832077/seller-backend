@@ -18,8 +18,8 @@ export class OrdersService {
    * 取得所有訂單
    * @returns
    */
-  getOrders(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getOrders(params: any): Observable<any> {
+    return this.http.get(this.apiUrl, { params });
   }
 
   /**

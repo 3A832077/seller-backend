@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, EMPTY, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { env } from '../env/env';
 
 declare const google: any;

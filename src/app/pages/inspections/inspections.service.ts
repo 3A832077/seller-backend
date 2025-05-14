@@ -18,8 +18,8 @@ export class InspectionsService {
    * 取得所有檢查項目
    * @returns
    */
-  getInspections(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getInspections(params: any): Observable<any> {
+    return this.http.get(this.apiUrl, { params });
   }
 
   /**

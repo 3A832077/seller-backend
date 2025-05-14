@@ -90,9 +90,7 @@ export class FormComponent implements OnInit{
    */
   timeChange(event: any): void {
     if (event) {
-      // 清除已選的詳細時間
-      this.form.get('detailTime')?.setValue(null);
-
+      this.form.get('detailTime')?.setValue(null); // 清除已選的詳細時間
       const [start, end] = event.split(' - ');
       this.generateDetailTime(start, end);
     }
@@ -123,11 +121,11 @@ export class FormComponent implements OnInit{
   getProducts() {
     const params = {
       _page: 1,
-      _limit: 1000
+      _per_page: 1000
     };
     this.productsService.getProducts(params).pipe(
       tap((res) => {
-        const originalList = res;
+        const originalList = res.data;
         this.productList = this.categoryList.map((category: any) => {
           const name = originalList.filter((e: any) => e.category.toString() === category.id.toString())
             .map((e: any) => e.name);
@@ -325,7 +323,7 @@ export class FormComponent implements OnInit{
         console.log('會議連結:', this.meetUrl);
       }),
       catchError((error) => {
-        console.error('錯誤:', error);
+        console.error(error);
         return EMPTY;
       },)).subscribe(() => {
         this.submit();

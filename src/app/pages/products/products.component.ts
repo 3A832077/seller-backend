@@ -65,20 +65,22 @@ export class ProductsComponent implements OnInit {
 
   /**
    * 取得產品列表
+   * @param pageIndex
+   * @param pageSize
    */
   getProducts(pageIndex: number = 1, pageSize: number = 10): void {
     const params = {
       _page: pageIndex,
-      _limit: pageSize
+      _per_page: pageSize
     };
     this.loading = true;
     this.productsService.getProducts(params).pipe(
       tap((res) => {
-        res.forEach((item: any) => {
+        res.data.forEach((item: any) => {
           item.categoryName = this.categoryList.find((category) => Number(category.id) === Number(item.category))?.name;
         });
-        this.displayedList = res;
-        this.total = res.length;
+        this.displayedList = res.data;
+        this.total = res.items;
       }),
       catchError((error) => {
         this.loading = false;
@@ -92,7 +94,7 @@ export class ProductsComponent implements OnInit {
 
   /**
    * 新增/編輯產品
-   * @param isEdit 是否為編輯
+   * @param isEdit
    * @param data
    */
   openModal(isEdit: boolean, data?: any): void {

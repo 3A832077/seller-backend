@@ -30,6 +30,10 @@
     {
       "id": 5,
       "name": "書輯"
+    },
+    {
+      "id": 6,
+      "name": "其他"
     }
   ],
   "orders": [
@@ -51,5 +55,37 @@
       ]
     }
   ],
-  "inspections": []
+  "inspections": [],
+  "chart":[
+    {
+      "category": "專輯",
+      "sales": 150,
+      "quantity": 1
+    },
+    {
+      "category": "衣服",
+      "sales": 0,
+      "quantity": 0
+    },
+    {
+      "category": "遊戲",
+      "sales": 0,
+      "quantity": 0
+    },
+    {
+      "category": "雜貨",
+      "sales": 0,
+      "quantity": 0
+    },
+    {
+      "category": "書輯",
+      "sales": 0,
+      "quantity": 0
+    },
+    {
+      "category": "其他",
+      "sales": 0,
+      "quantity": 0
+    }
+  ]
 }
