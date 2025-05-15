@@ -5,7 +5,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
-import { BarChart, PieChart } from 'echarts/charts';
+import { BarChart, PieChart, LineChart } from 'echarts/charts';
 import { TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -13,7 +13,8 @@ import { NzRateModule } from 'ng-zorro-antd/rate';
 import { FormsModule } from '@angular/forms';
 import { DashboardService } from './dashboard.service';
 import { tap, catchError, EMPTY } from 'rxjs';
-echarts.use([BarChart, GridComponent, CanvasRenderer, PieChart, TooltipComponent, LegendComponent]);
+echarts.use([BarChart, GridComponent, CanvasRenderer, PieChart,
+  TooltipComponent, LegendComponent, LineChart]);
 
 @Component({
   selector: 'app-dashboard',
@@ -79,16 +80,21 @@ export class DashboardComponent implements OnInit {
     return percentData;
   }
 
+  /**
+   * 取得折線圖
+   */
   getBarOptions() {
+    const colors = ['#5470C6', '#91CC75', '#EE6666', '#FFB980', '#73C0DE',
+      '#3BA272', '#FC8452', '#9A60B4', '#EA7CCC'];
     this.barOptions = {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'shadow'
+          type: 'line'
         }
       },
       legend: {
-        data: this.chartData.map(item => item.category)
+        data: ['銷售額'],
       },
       grid: {
         left: '3%',
@@ -99,10 +105,7 @@ export class DashboardComponent implements OnInit {
       xAxis: [
         {
           type: 'category',
-          data: this.chartData.map(item => item.category),
-          axisTick: {
-            alignWithLabel: true
-          }
+          data: this.chartData.map(item => item.category)
         }
       ],
       yAxis: [
@@ -113,18 +116,19 @@ export class DashboardComponent implements OnInit {
       series: [
         {
           name: '銷售額',
-          type: 'bar',
-          barWidth: '60%',
+          type: 'line',
           data: this.chartData.map(item => item.sales),
+          lineStyle: {
+            width: 2
+          },
           itemStyle: {
             color: (params: any) => {
-              const colors = ['#5470C6', '#91CC75', '#EE6666', '#FFB980', '#73C0DE', '#3BA272', '#FC8452', '#9A60B4', '#EA7CCC'];
               return colors[params.dataIndex % colors.length];
             }
           }
         }
       ]
-    }
+    };
   }
 
   /**
@@ -143,7 +147,7 @@ export class DashboardComponent implements OnInit {
         {
           name: '類別',
           type: 'pie',
-          radius: '85%',
+          radius: '80%',
           data: this.calcCategoryPercent(),
         }
       ]

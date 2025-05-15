@@ -54,10 +54,10 @@ export class FormComponent implements OnInit{
     this.getCategory();
   }
 
-  // beforeUpload = (file: NzUploadFile): boolean => {
-  //   this.fileList = this.fileList.concat(file);
-  //   return false;
-  // };
+  beforeUpload = (file: NzUploadFile): boolean => {
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
 
   /**
    * 關閉新增/編輯modal
