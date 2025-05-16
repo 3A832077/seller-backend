@@ -5,7 +5,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AuthService } from './pages/auth.service';
+import { AuthService } from './service/auth.service';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
@@ -19,7 +19,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
   isCollapsed = false;
 
   meetUrl = '';
@@ -39,6 +38,4 @@ export class AppComponent implements OnInit {
   isActive(url: string): boolean {
     return this.router.url === url;
   }
-
-
 }

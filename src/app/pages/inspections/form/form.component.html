@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
+  <div nz-col nzSpan="24" class="pb-10">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">商品類別</nz-form-label>
       <nz-form-control [nzSpan]="18">
@@ -9,7 +9,7 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;" *ngIf="form.get('category')?.value">
+  <div nz-col nzSpan="24" class="pb-10" *ngIf="form.get('category')?.value">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">商品名稱</nz-form-label>
       <nz-form-control [nzSpan]="18">
@@ -19,7 +19,7 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
+  <div nz-col nzSpan="24" class="pb-10">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">檢測日期</nz-form-label>
       <nz-form-control [nzSpan]="18">
@@ -29,7 +29,7 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;" >
+  <div nz-col nzSpan="24" class="pb-10">
     <nz-form-item>
       <nz-form-label nzSpan="4">檢測時段</nz-form-label>
       <nz-form-control [nzSpan]="18">
@@ -39,7 +39,7 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;" *ngIf="form.get('time')?.value">
+  <div nz-col nzSpan="24" class="pb-10" *ngIf="form.get('time')?.value">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">詳細時間</nz-form-label>
       <nz-form-control [nzSpan]="18">
@@ -49,7 +49,7 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div>
+  <div nz-col nzSpan="24" class="pb-10">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">持卡人姓名</nz-form-label>
       <nz-form-control [nzSpan]="18">
@@ -57,19 +57,24 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" style="padding-bottom: 10px;">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="4">信用卡號</nz-form-label>
+  <div nz-row nzGutter="16" class="pb-10">
+    <div nz-col nzSpan="16">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6">信用卡號</nz-form-label>
         <nz-form-control [nzSpan]="18">
-          <input nz-input formControlName="cardNumber" maxlength="16" autocomplete="cc-number"/>
+          <input nz-input formControlName="cardNumber" maxlength="16" autocomplete="cc-number" (ngModelChange)="checkCardType($event)"/>
           <div *ngIf="form.get('cardNumber')?.errors" class="error">
             <span>無效的信用卡號</span>
           </div>
         </nz-form-control>
       </nz-form-item>
+    </div>
+    <div nz-col nzSpan="6">
+      <img [src]="cardTypeImg" alt="信用卡類型" height="32px" *ngIf="cardTypeImg"/>
+    </div>
   </div>
   <div nz-row nzGutter="12">
-    <div nz-col nzSpan="12" style="padding-bottom: 10px;">
+    <div nz-col nzSpan="12" class="pb-10">
       <nz-form-item>
         <nz-form-label [nzSpan]="8">到期日</nz-form-label>
         <nz-form-control [nzSpan]="14">
@@ -81,7 +86,7 @@
         </nz-form-control>
       </nz-form-item>
     </div>
-    <div nz-col nzSpan="12" style="padding-bottom: 10px;">
+    <div nz-col nzSpan="12" class="pb-10">
       <nz-form-item>
         <nz-form-label [nzSpan]="11">安全碼</nz-form-label>
         <nz-form-control [nzSpan]="11">

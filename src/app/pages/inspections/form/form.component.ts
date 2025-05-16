@@ -13,11 +13,11 @@ import { ProductsService } from '../../products/products.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { InspectionsService } from '../inspections.service';
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../../../service/auth.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { env } from '../../../env/env';
-import { checkCardNumberValidator } from '../../validator/checkCradNumber';
-import { checkExpireDateValidator } from '../../validator/checkExpireDate';
+import { checkCardNumberValidator } from '../../../validator/checkCradNumber';
+import { checkExpireDateValidator } from '../../../validator/checkExpireDate';
 
 @Component({
   selector: 'inspections-form',
@@ -48,6 +48,8 @@ export class FormComponent implements OnInit{
 
   meetUrl: string = '';
 
+  cardTypeImg: string | null = null;
+
   timeList: any[] = [
     { label: '09:00 - 10:00' },
     { label: '10:00 - 11:00' },
@@ -56,7 +58,7 @@ export class FormComponent implements OnInit{
     { label: '14:00 - 15:00' },
     { label: '15:00 - 16:00' },
     { label: '16:00 - 17:00' },
-  ]
+  ];
 
   constructor(
                 private fb: FormBuilder,
@@ -160,7 +162,7 @@ export class FormComponent implements OnInit{
   /**
    * 關閉modal
    */
-  close(){
+  close() {
     this.modal.destroy();
   }
 
@@ -327,7 +329,23 @@ export class FormComponent implements OnInit{
         return EMPTY;
       },)).subscribe(() => {
         this.submit();
-      }
-    )
+      });
+  }
+
+  /**
+   * 判斷信用卡號類別
+   * @param event
+   */
+  checkCardType(event: any): void {
+    if (!event) {
+      this.cardTypeImg = null;
+      return;
+    }
+    const n = event.replace(/\D/g, '');
+    if (/^4/.test(n)) this.cardTypeImg = '/img/visa.png';
+    else if (/^5[1-5]/.test(n)) this.cardTypeImg = '/img/mastercard.png';
+    else if (/^3[47]/.test(n)) this.cardTypeImg = '/img/amex.png';
+    else if (/^35/.test(n)) this.cardTypeImg = '/img/JCB.png';
+    else this.cardTypeImg = null;
   }
 }

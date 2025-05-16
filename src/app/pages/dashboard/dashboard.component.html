@@ -1,4 +1,4 @@
-<div nz-col nzSpan="24" style="padding-bottom: 50px">
+<div nz-col nzSpan="24" class="pb-50">
   <nz-row [nzGutter]="24">
     <nz-col [nzSpan]="6">
       <nz-card>
@@ -26,12 +26,12 @@
   <nz-row [nzGutter]="24">
     <nz-col [nzSpan]="12">
       <nz-card nzTitle="各商品銷售量">
-        <div echarts [options]="barOptions" *ngIf="isBrowser" style="height: 400px;weight: 200px;"></div>
+        <div echarts [options]="barOptions" *ngIf="isBrowser" class="chartDiv"></div>
       </nz-card>
     </nz-col>
     <nz-col [nzSpan]="12">
       <nz-card nzTitle="各類別銷售額佔比">
-        <div echarts [options]="pieOptions" *ngIf="isBrowser" style="height: 400px;weight: 200px;"></div>
+        <div echarts [options]="pieOptions" *ngIf="isBrowser" class="chartDiv"></div>
       </nz-card>
     </nz-col>
   </nz-row>

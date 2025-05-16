@@ -85,7 +85,10 @@ export class AuthService {
     this.tokenClient.requestAccessToken();
   }
 
-
+  /**
+   * 檢查是否登入
+   * @returns
+   */
   public isLoggedIn(): boolean {
     let savedToken = null;
     let expiresAt = null;
@@ -96,6 +99,10 @@ export class AuthService {
     return !!savedToken && !!expiresAt && Date.now() < parseInt(expiresAt);
   }
 
+  /**
+   * 登出
+   * @returns
+   */
   public logout() {
     this.accessToken = '';
     this.isExpired = true;
