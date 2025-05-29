@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { env } from '../env/env';
+import { env } from '../env/environment';
 
 declare const google: any;
 
@@ -8,33 +8,29 @@ declare const google: any;
   providedIn: 'root',
 })
 export class AuthService {
-
   tokenClient: any;
 
   accessToken: string = '';
 
   isExpired: boolean = false;
 
-  constructor(
-                 private http: HttpClient
-             ) {
-                  // 檢查是否有登入過的token&檢查是否過期
-                  if (typeof window !== 'undefined') {
-                    const savedToken = localStorage.getItem('accessToken');
-                    const expiresAt = localStorage.getItem('expires_at');
-                    if (savedToken && expiresAt) {
-                      this.isExpired = Date.now() >= parseInt(expiresAt);
-                      if (!this.isExpired) {
-                        this.accessToken = savedToken;
-                      }
-                    }
-                    else {
-                      this.loadGoogleSdk().then(() => {
-                          this.initGoogleOAuth();
-                      });
-                    }
-                  }
-                }
+  constructor(private http: HttpClient) {
+    // 檢查是否有登入過的token&檢查是否過期
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('accessToken');
+      const expiresAt = localStorage.getItem('expires_at');
+      if (savedToken && expiresAt) {
+        this.isExpired = Date.now() >= parseInt(expiresAt);
+        if (!this.isExpired) {
+          this.accessToken = savedToken;
+        }
+      } else {
+        this.loadGoogleSdk().then(() => {
+          this.initGoogleOAuth();
+        });
+      }
+    }
+  }
 
   /**
    * 載入 Google SDK
@@ -42,7 +38,9 @@ export class AuthService {
    */
   private loadGoogleSdk(): Promise<void> {
     return new Promise((resolve) => {
-      const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+      const existingScript = document.querySelector(
+        'script[src="https://accounts.google.com/gsi/client"]'
+      );
       if (existingScript) return resolve();
 
       const script = document.createElement('script');
@@ -65,7 +63,10 @@ export class AuthService {
         if (resp.access_token) {
           this.accessToken = resp.access_token;
           localStorage.setItem('accessToken', this.accessToken);
-          localStorage.setItem('expires_at', (Date.now() + resp.expires_in * 1000).toString()); // 儲存過期時間
+          localStorage.setItem(
+            'expires_at',
+            (Date.now() + resp.expires_in * 1000).toString()
+          ); // 儲存過期時間
         }
       },
     });
@@ -110,6 +111,4 @@ export class AuthService {
     localStorage.removeItem('expires_at');
     console.log('使用者已登出');
   }
-
-
 }

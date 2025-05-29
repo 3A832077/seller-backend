@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { env } from '../../env/env';
+import { env } from '../../env/environment';
+import { prodEnv } from '../../env/environment.prod';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrdersService {
 
-  constructor(
-                private http: HttpClient
-             ) {}
+  apiUrl = `${env.production ? prodEnv.apiUrl : env.apiUrl}/orders`;
 
-  apiUrl = `${env.apiUrl}/orders`;
+  constructor(private http: HttpClient) {}
 
   /**
    * 取得所有訂單
@@ -35,5 +34,4 @@ export class OrdersService {
   editOrderRate(id: string, data: any): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${id}`, data);
   }
-
 }

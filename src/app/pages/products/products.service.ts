@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { env } from '../../env/env';
+import { env } from '../../env/environment';
+import { prodEnv } from '../../env/environment.prod';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductsService {
 
-  apiUrl = `${env.apiUrl}/products`;
+  constructor(private http: HttpClient) {}
 
-  apiUrl2 = `${env.apiUrl}/category`;
+  apiUrl = `${env.production ? prodEnv.apiUrl : env.apiUrl}/products`;
 
-  constructor(
-                private http: HttpClient
-             ) {}
+  apiUrl2 = `${env.production ? prodEnv.apiUrl : env.apiUrl}/category`;
 
   /**
    * 取得所有產品
@@ -67,8 +66,4 @@ export class ProductsService {
   //   });
   //   return this.http.post<any>('https://api.imgur.com/3/image', file, { headers });
   // }
-
-
-
-
 }

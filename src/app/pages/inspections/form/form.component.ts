@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { CommonModule, formatDate } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormBuilder,
+  Validators,
+} from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -15,23 +21,28 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { InspectionsService } from '../inspections.service';
 import { AuthService } from '../../../service/auth.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { env } from '../../../env/env';
+import { env } from '../../../env/environment';
 import { checkCardNumberValidator } from '../../../validator/checkCradNumber';
 import { checkExpireDateValidator } from '../../../validator/checkExpireDate';
 
 @Component({
   selector: 'inspections-form',
   imports: [
-              CommonModule, NzFormModule, FormsModule,
-              ReactiveFormsModule, NzButtonModule, NzInputModule,
-              NzIconModule, NzDividerModule, NzSelectModule,
-              NzDatePickerModule
-           ],
+    CommonModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzButtonModule,
+    NzInputModule,
+    NzIconModule,
+    NzDividerModule,
+    NzSelectModule,
+    NzDatePickerModule,
+  ],
   templateUrl: './form.component.html',
-  styleUrl: './form.component.css'
+  styleUrl: './form.component.css',
 })
-export class FormComponent implements OnInit{
-
+export class FormComponent implements OnInit {
   form: FormGroup = new FormGroup({});
 
   weekList: any[] = [];
@@ -61,14 +72,14 @@ export class FormComponent implements OnInit{
   ];
 
   constructor(
-                private fb: FormBuilder,
-                private message: NzMessageService,
-                private modal: NzModalRef,
-                private productsService: ProductsService,
-                private inspectionsService: InspectionsService,
-                private authService: AuthService,
-                private http: HttpClient,
-              ){}
+    private fb: FormBuilder,
+    private message: NzMessageService,
+    private modal: NzModalRef,
+    private productsService: ProductsService,
+    private inspectionsService: InspectionsService,
+    private authService: AuthService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -95,8 +106,7 @@ export class FormComponent implements OnInit{
       this.form.get('detailTime')?.setValue(null); // 清除已選的詳細時間
       const [start, end] = event.split(' - ');
       this.generateDetailTime(start, end);
-    }
-    else {
+    } else {
       this.detailTimeList = [];
       this.form.get('detailTime')?.setValue(null);
     }
@@ -109,9 +119,10 @@ export class FormComponent implements OnInit{
   categoryChange(event: any): void {
     if (event) {
       this.form.get('product')?.setValue(null);
-      this.selectedProducts = this.productList.filter((e: any) => e.category === event).flatMap((e: any) => e.products);
-    }
-    else {
+      this.selectedProducts = this.productList
+        .filter((e: any) => e.category === event)
+        .flatMap((e: any) => e.products);
+    } else {
       this.selectedProducts = [];
       this.form.get('product')?.setValue(null);
     }
@@ -123,40 +134,51 @@ export class FormComponent implements OnInit{
   getProducts() {
     const params = {
       _page: 1,
-      _per_page: 1000
+      _per_page: 1000,
     };
-    this.productsService.getProducts(params).pipe(
-      tap((res) => {
-        const originalList = res.data;
-        this.productList = this.categoryList.map((category: any) => {
-          const name = originalList.filter((e: any) => e.category.toString() === category.id.toString())
-            .map((e: any) => e.name);
+    this.productsService
+      .getProducts(params)
+      .pipe(
+        tap((res) => {
+          const originalList = res.data;
+          this.productList = this.categoryList.map((category: any) => {
+            const name = originalList
+              .filter(
+                (e: any) => e.category.toString() === category.id.toString()
+              )
+              .map((e: any) => e.name);
             return {
               category: category.name,
               products: name,
             };
-        });
-      }),
-      catchError((err) => {
-        console.error(err);
-        return EMPTY;
-    })).subscribe(() => {});
+          });
+        }),
+        catchError((err) => {
+          console.error(err);
+          return EMPTY;
+        })
+      )
+      .subscribe(() => {});
   }
 
   /**
    * 取得類別列表
    */
-  getCategory(){
-    this.productsService.getCategories().pipe(
-      tap((res) => {
-        this.categoryList = res;
-      }),
-      catchError((err) => {
-        console.error(err);
-        return EMPTY;
-    })).subscribe(() => {
-      this.getProducts();
-    });
+  getCategory() {
+    this.productsService
+      .getCategories()
+      .pipe(
+        tap((res) => {
+          this.categoryList = res;
+        }),
+        catchError((err) => {
+          console.error(err);
+          return EMPTY;
+        })
+      )
+      .subscribe(() => {
+        this.getProducts();
+      });
   }
 
   /**
@@ -177,12 +199,14 @@ export class FormComponent implements OnInit{
       const date = new Date(today);
       date.setDate(today.getDate() + i);
 
-      const mmdd = `${date.getFullYear()}-${this.pad(date.getMonth() + 1)}-${this.pad(date.getDate())}`;
+      const mmdd = `${date.getFullYear()}-${this.pad(
+        date.getMonth() + 1
+      )}-${this.pad(date.getDate())}`;
       const weekday = weekdays[date.getDay()];
 
       this.weekList.push({
         value: mmdd,
-        label: `${mmdd} (${weekday})`
+        label: `${mmdd} (${weekday})`,
       });
     }
   }
@@ -252,20 +276,22 @@ export class FormComponent implements OnInit{
         url: this.meetUrl,
       };
 
-      this.inspectionsService.addInspection(data).pipe(
-        tap((res) => {
-          this.modal.close('success');
-          this.message.success('新增成功');
-        }),
-        catchError((err) => {
-          this.message.error('新增失敗');
-          return EMPTY;
-        }
-      )).subscribe(() => {});
-    }
-    else {
+      this.inspectionsService
+        .addInspection(data)
+        .pipe(
+          tap((res) => {
+            this.modal.close('success');
+            this.message.success('新增成功');
+          }),
+          catchError((err) => {
+            this.message.error('新增失敗');
+            return EMPTY;
+          })
+        )
+        .subscribe(() => {});
+    } else {
       // 表單驗證
-      Object.values(this.form.controls).forEach(control => {
+      Object.values(this.form.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });
@@ -274,7 +300,7 @@ export class FormComponent implements OnInit{
     }
   }
 
-   /**
+  /**
    * 建立會議
    */
   createEvent() {
@@ -298,7 +324,7 @@ export class FormComponent implements OnInit{
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
 
     const event = {
@@ -306,28 +332,32 @@ export class FormComponent implements OnInit{
       description: '123',
       start: {
         dateTime: startDateTime.toISOString(),
-        timeZone: 'Asia/Taipei'
+        timeZone: 'Asia/Taipei',
       },
       end: {
         dateTime: endDateTime.toISOString(),
-        timeZone: 'Asia/Taipei'
+        timeZone: 'Asia/Taipei',
       },
       conferenceData: {
         createRequest: {
-          requestId: 'meet-' + Math.random()
-        }
-      }
+          requestId: 'meet-' + Math.random(),
+        },
+      },
     };
 
-    this.http.post(env.googleApiUrl, event,{ headers }).pipe(
-      tap((response: any) => {
-        this.meetUrl = response.hangoutLink;
-        console.log('會議連結:', this.meetUrl);
-      }),
-      catchError((error) => {
-        console.error(error);
-        return EMPTY;
-      },)).subscribe(() => {
+    this.http
+      .post(env.googleApiUrl, event, { headers })
+      .pipe(
+        tap((response: any) => {
+          this.meetUrl = response.hangoutLink;
+          console.log('會議連結:', this.meetUrl);
+        }),
+        catchError((error) => {
+          console.error(error);
+          return EMPTY;
+        })
+      )
+      .subscribe(() => {
         this.submit();
       });
   }

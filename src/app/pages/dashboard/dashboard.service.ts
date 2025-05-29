@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { env } from '../../env/env';
-
+import { env } from '../../env/environment';
+import { prodEnv } from '../../env/environment.prod';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class DashboardService {
 
-  apiUrl = `${env.apiUrl}/chart`;
+  apiUrl = `${env.production ? prodEnv.apiUrl : env.apiUrl}/chart`;
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * 取得所有圖表資料
@@ -22,5 +19,4 @@ export class DashboardService {
   getCharts() {
     return this.http.get(this.apiUrl);
   }
-  
 }
