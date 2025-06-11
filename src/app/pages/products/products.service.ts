@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { env } from '../../env/environment';
-import { prodEnv } from '../../env/environment.prod';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +10,9 @@ export class ProductsService {
 
   constructor(private http: HttpClient) {}
 
-  apiUrl = `${env.production ? prodEnv.apiUrl : env.apiUrl}/products`;
+  apiUrl = `${env.apiUrl}/products`;
 
-  apiUrl2 = `${env.production ? prodEnv.apiUrl : env.apiUrl}/category`;
+  apiUrl2 = `${env.apiUrl}/category`;
 
   /**
    * 取得所有產品

@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { env } from '../../env/environment';
-import { prodEnv } from '../../env/environment.prod';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
 
-  apiUrl = `${env.production ? prodEnv.apiUrl : env.apiUrl}/chart`;
+  apiUrl = `${env.apiUrl}/chart`;
 
   constructor(private http: HttpClient) {}
 

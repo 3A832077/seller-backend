@@ -318,7 +318,7 @@ export class FormComponent implements OnInit {
     const endDateTime = new Date(startDateTime.getTime() + 30 * 60000); // 加 30 分鐘
 
     if (!accessToken || isTokenExpired) {
-      this.authService.signIn();
+      this.authService.setupOneTap();
       return;
     }
 
@@ -345,9 +345,7 @@ export class FormComponent implements OnInit {
       },
     };
 
-    this.http
-      .post(env.googleApiUrl, event, { headers })
-      .pipe(
+    this.http.post(env.googleApiUrl, event, { headers }).pipe(
         tap((response: any) => {
           this.meetUrl = response.hangoutLink;
           console.log('會議連結:', this.meetUrl);

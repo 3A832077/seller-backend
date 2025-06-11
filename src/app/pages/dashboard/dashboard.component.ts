@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
                 @Inject(PLATFORM_ID) platformId: Object,
-                private dashboardService: DashboardService
+                private dashboardService: DashboardService,
              ) {
                 this.isBrowser = isPlatformBrowser(platformId);
   }

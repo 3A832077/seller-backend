@@ -34,17 +34,34 @@
     </ul>
   </nz-sider>
   <nz-layout>
-    <nz-header >
+    <nz-header>
       <div class="header-content" [ngStyle]="{'justify-content': isCollapsed ? 'space-between' : 'flex-end'}">
         <div style="margin-left:80px;" *ngIf="isCollapsed">
           <a routerLink="/dashboard">
             <img src="/img/icon.png" alt="logo" height="50" width="70" />
           </a>
         </div>
-        <div >
-          <button nz-button nzType="link" (click)="auth.isLoggedIn() ? auth.logout() : auth.signIn()">
-            {{ auth.isLoggedIn() ? '登出' : '登入'}}
-          </button>
+        <div class="userPicDiv">
+          <a *ngIf="auth.isLoggedIn()" (click)="toggleDropdown()">
+            <img [src]="picUrl" class="userPic">
+          </a>
+          <mat-card appearance="outlined" *ngIf="isDropdownOpen">
+            <mat-card-header>
+              <mat-card-subtitle>
+                {{ userEmail }}
+                <button nz-button nzType="link" style="color: black;" (click)="toggleDropdown()">
+                  <span nz-icon nzType="close" matTooltip="關閉"></span>
+                </button>
+              </mat-card-subtitle>
+              <mat-card-title style="padding-bottom: 15px;">
+                <img [src]="picUrl">
+              </mat-card-title>
+              <mat-card-title style="padding-bottom: 10px;">{{ userName }} 您好!</mat-card-title>
+            </mat-card-header>
+            <mat-card-actions>
+              <button nz-button (click)="auth.logout()">登出</button>
+            </mat-card-actions>
+          </mat-card>
         </div>
       </div>
     </nz-header>

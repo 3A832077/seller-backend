@@ -1,5 +1,5 @@
 // 生產環境
-export const prodEnv = {
+export const env = {
   production: true,
   apiUrl: 'https://seller-backend-two.vercel.app',
   googleClientId: '584420335213-h91mg7sv5t6tde43k0bccdodj2k3dvud.apps.googleusercontent.com',
