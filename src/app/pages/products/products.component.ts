@@ -71,7 +71,7 @@ export class ProductsComponent implements OnInit {
   getProducts(pageIndex: number = 1, pageSize: number = 10): void {
     const params = {
       _page: pageIndex,
-      _per_page: pageSize
+      _limit: pageSize
     };
     this.loading = true;
     this.productsService.getProducts(params).pipe(

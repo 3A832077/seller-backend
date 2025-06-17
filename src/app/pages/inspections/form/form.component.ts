@@ -134,7 +134,7 @@ export class FormComponent implements OnInit {
   getProducts() {
     const params = {
       _page: 1,
-      _per_page: 1000,
+      _limit: 1000,
     };
     this.productsService
       .getProducts(params)

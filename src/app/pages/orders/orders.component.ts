@@ -63,7 +63,7 @@ export class OrdersComponent implements OnInit {
   getOrders(pageIndex: number = 1, pageSize: number = 10) {
     const params = {
       _page: pageIndex,
-      _per_page: pageSize
+      _limit: pageSize
     }
     this.loading = true;
     this.ordersService.getOrders(params).pipe(

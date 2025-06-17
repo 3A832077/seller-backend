@@ -55,7 +55,7 @@ export class InspectionsComponent implements OnInit {
   getInspections(pageIndex: number = 1, pageSize: number = 10) {
     const params = {
       _page: pageIndex,
-      _per_page: pageSize
+      _limit: pageSize
     };
     this.loading = true;
     this.inspectionsService.getInspections(params).pipe(
