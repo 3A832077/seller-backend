@@ -76,11 +76,11 @@ export class ProductsComponent implements OnInit {
     this.loading = true;
     this.productsService.getProducts(params).pipe(
       tap((res) => {
-        res.data.forEach((item: any) => {
+        res.forEach((item: any) => {
           item.categoryName = this.categoryList.find((category) => Number(category.id) === Number(item.category))?.name;
         });
-        this.displayedList = res.data;
-        this.total = res.items;
+        this.displayedList = res;
+        this.total = Number(res.headers.get('X-Total-Count'));
       }),
       catchError((error) => {
         this.loading = false;

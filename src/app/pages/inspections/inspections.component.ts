@@ -60,8 +60,8 @@ export class InspectionsComponent implements OnInit {
     this.loading = true;
     this.inspectionsService.getInspections(params).pipe(
       tap((res) => {
-        this.displayedList = res.data;
-        this.total = res.items;
+        this.displayedList = res;
+        this.total = Number(res.headers.get('X-Total-Count'));
       }),
       catchError((err) => {
         this.total = 0;

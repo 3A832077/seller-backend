@@ -17,7 +17,7 @@ export class OrdersService {
    * @returns
    */
   getOrders(params: any): Observable<any> {
-    return this.http.get(this.apiUrl, { params });
+    return this.http.get(this.apiUrl, { params, observe: 'response' });
   }
 
   /**
