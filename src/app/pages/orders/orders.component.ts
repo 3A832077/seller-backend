@@ -12,6 +12,7 @@ import { catchError, EMPTY, tap } from 'rxjs';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { OrdersService } from './orders.service';
 import { NzRateModule } from 'ng-zorro-antd/rate';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-orders',
@@ -67,8 +68,8 @@ export class OrdersComponent implements OnInit {
     }
     this.loading = true;
     this.ordersService.getOrders(params).pipe(
-      tap((res) => {
-        this.displayedList = res;
+      tap((res: HttpResponse<any>) => {
+        this.displayedList = res.body;
         this.total = Number(res.headers.get('X-Total-Count'));
       }),
       catchError((err) => {

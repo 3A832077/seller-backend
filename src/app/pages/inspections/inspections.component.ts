@@ -12,6 +12,7 @@ import { catchError, EMPTY, tap } from 'rxjs';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { InspectionsService } from './inspections.service';
 import { FormComponent } from './form/form.component';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-inspections',
@@ -59,8 +60,8 @@ export class InspectionsComponent implements OnInit {
     };
     this.loading = true;
     this.inspectionsService.getInspections(params).pipe(
-      tap((res) => {
-        this.displayedList = res;
+      tap((res: HttpResponse<any>) => {
+        this.displayedList = res.body;
         this.total = Number(res.headers.get('X-Total-Count'));
       }),
       catchError((err) => {

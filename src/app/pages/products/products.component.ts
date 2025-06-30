@@ -11,6 +11,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { FormComponent } from './form/form.component';
 import { ProductsService } from './products.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-products',
@@ -75,11 +76,11 @@ export class ProductsComponent implements OnInit {
     };
     this.loading = true;
     this.productsService.getProducts(params).pipe(
-      tap((res) => {
-        res.forEach((item: any) => {
+      tap((res: HttpResponse<any>) => {
+        res.body.forEach((item: any) => {
           item.categoryName = this.categoryList.find((category) => Number(category.id) === Number(item.category))?.name;
         });
-        this.displayedList = res;
+        this.displayedList = res.body;
         this.total = Number(res.headers.get('X-Total-Count'));
       }),
       catchError((error) => {
