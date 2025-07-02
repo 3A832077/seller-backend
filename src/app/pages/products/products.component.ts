@@ -11,7 +11,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { FormComponent } from './form/form.component';
 import { ProductsService } from './products.service';
-import { HttpResponse } from '@angular/common/http';
+import { SupabaseService } from '../../service/supabase.service';
 
 @Component({
   selector: 'app-products',
@@ -40,7 +40,8 @@ export class ProductsComponent implements OnInit {
 
   constructor(
                 private modalService: NzModalService,
-                private productsService: ProductsService
+                private productsService: ProductsService,
+                private supabase: SupabaseService
              ) { }
 
   ngOnInit(): void {
@@ -51,15 +52,12 @@ export class ProductsComponent implements OnInit {
    * 取得產品類別
    */
   getCategory(){
-    this.productsService.getCategories().pipe(
-      tap((res) => {
-        this.categoryList = res;
-      }),
-      catchError((err) => {
-        console.error(err);
-        return EMPTY;
-      })
-    ).subscribe(() => {
+    this.supabase?.getCategories()?.then(({ data, error }) => {
+      if (error) {
+        console.error('取得產品類別失敗', error);
+        return;
+      }
+      this.categoryList = data || [];
       this.getProducts();
     });
   }
@@ -69,28 +67,21 @@ export class ProductsComponent implements OnInit {
    * @param pageIndex
    * @param pageSize
    */
-  getProducts(pageIndex: number = 1, pageSize: number = 10): void {
-    const params = {
-      _page: pageIndex,
-      _limit: pageSize
-    };
+  getProducts(pageIndex: number = 1, pageSize: number = 10){
     this.loading = true;
-    this.productsService.getProducts(params).pipe(
-      tap((res: HttpResponse<any>) => {
-        res.body.forEach((item: any) => {
-          item.categoryName = this.categoryList.find((category) => Number(category.id) === Number(item.category))?.name;
-        });
-        this.displayedList = res.body;
-        this.total = Number(res.headers.get('X-Total-Count'));
-      }),
-      catchError((error) => {
+    this.supabase.getProducts(pageIndex, pageSize)?.then(({ data, error, count }) => {
+      this.loading = false;
+      if (error){
+        console.error('取得產品列表失敗', error);
         this.loading = false;
-        this.displayedList = [];
-        this.total = 0;
-        return EMPTY;
-      })).subscribe(() => {
-        this.loading = false;
+        return;
+      }
+      this.total = count || 0;
+      this.displayedList = data.map((item: any) => {
+        item.categoryName = this.categoryList.find(category => category.id === item.category)?.name;
+        return item;
       });
+    });
   }
 
   /**
@@ -124,15 +115,13 @@ export class ProductsComponent implements OnInit {
     this.modalService.confirm({
       nzTitle: '確定要刪除嗎?',
       nzOnOk: () => {
-        this.productsService.deleteProduct(id).pipe(
-          tap(() => {
-            this.getProducts();
-          }),
-          catchError((err) => {
-            console.error(err);
-            return EMPTY;
-          })
-        ).subscribe();
+        this.supabase.deleteProduct(id)?.then(({ error }) => {
+          if (error) {
+            console.error('刪除失敗', error);
+            return;
+          }
+          this.getProducts();
+        });
       }
     });
   }

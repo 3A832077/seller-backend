@@ -18,7 +18,7 @@
           ngSkipHydration>
   <thead>
     <tr>
-      <!-- <th nzAlign="center">圖片</th> -->
+      <th nzAlign="center">圖片</th>
       <th nzAlign="center">商品名稱</th>
       <th nzAlign="center">商品類別</th>
       <th nzAlign="center">價格</th>
@@ -30,9 +30,9 @@
   </thead>
   <tbody>
     <tr *ngFor="let data of filterTable.data">
-      <!-- <td nzAlign="center">
-        <img src="/img/{{data.pictrue}}" width="70px" height="50px" />
-      </td> -->
+      <td nzAlign="center">
+        <img src="{{data.imageUrl}}"/>
+      </td>
       <td nzAlign="center">{{ data.name }}</td>
       <td nzAlign="center">{{ data.categoryName }}</td>
       <td nzAlign="center">{{ data.price }}</td>

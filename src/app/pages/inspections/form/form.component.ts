@@ -24,6 +24,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { env } from '../../../env/environment';
 import { checkCardNumberValidator } from '../../../validator/checkCradNumber';
 import { checkExpireDateValidator } from '../../../validator/checkExpireDate';
+import { SupabaseService } from '../../../service/supabase.service';
 
 @Component({
   selector: 'inspections-form',
@@ -78,7 +79,8 @@ export class FormComponent implements OnInit {
     private productsService: ProductsService,
     private inspectionsService: InspectionsService,
     private authService: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private supabase: SupabaseService,
   ) {}
 
   ngOnInit(): void {
@@ -122,7 +124,8 @@ export class FormComponent implements OnInit {
       this.selectedProducts = this.productList
         .filter((e: any) => e.category === event)
         .flatMap((e: any) => e.products);
-    } else {
+    }
+    else {
       this.selectedProducts = [];
       this.form.get('product')?.setValue(null);
     }
@@ -132,53 +135,36 @@ export class FormComponent implements OnInit {
    * 取得產品列表
    */
   getProducts() {
-    const params = {
-      _page: 1,
-      _limit: 1000,
-    };
-    this.productsService
-      .getProducts(params)
-      .pipe(
-        tap((res) => {
-          const originalList = res.data;
-          this.productList = this.categoryList.map((category: any) => {
-            const name = originalList
-              .filter(
-                (e: any) => e.category.toString() === category.id.toString()
-              )
-              .map((e: any) => e.name);
-            return {
-              category: category.name,
-              products: name,
-            };
-          });
-        }),
-        catchError((err) => {
-          console.error(err);
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {});
+    this.supabase.getAllProducts()?.then(({ data, error }) => {
+      if (error) {
+        console.error('取得產品列表失敗', error);
+        return;
+      }
+      const originalList = data;
+      this.productList = this.categoryList.map((category: any) => {
+        const name = originalList.filter((e: any) =>
+          e.category.toString() === category.id.toString()
+        ).map((e: any) => e.name);
+        return {
+          category: category.name,
+          products: name,
+        };
+      });
+    });
   }
 
   /**
    * 取得類別列表
    */
   getCategory() {
-    this.productsService
-      .getCategories()
-      .pipe(
-        tap((res) => {
-          this.categoryList = res;
-        }),
-        catchError((err) => {
-          console.error(err);
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {
-        this.getProducts();
-      });
+    this.supabase.getCategories()?.then(({ data, error }) => {
+      if (error) {
+        console.error('取得類別列表失敗', error);
+        return;
+      }
+      this.categoryList = data || [];
+      this.getProducts();
+    });
   }
 
   /**
