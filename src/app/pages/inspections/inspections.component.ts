@@ -8,11 +8,9 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { catchError, EMPTY, tap } from 'rxjs';
-import { RouterOutlet, RouterLink } from '@angular/router';
 import { InspectionsService } from './inspections.service';
 import { FormComponent } from './form/form.component';
-import { HttpResponse } from '@angular/common/http';
+import { SupabaseService } from '../../service/supabase.service';
 
 @Component({
   selector: 'app-inspections',
@@ -41,7 +39,7 @@ export class InspectionsComponent implements OnInit {
 
   constructor(
                 private modalService: NzModalService,
-                private inspectionsService: InspectionsService,
+                private supabase: SupabaseService
               ) { }
 
   ngOnInit(): void {
@@ -54,23 +52,15 @@ export class InspectionsComponent implements OnInit {
    * @param pageSize
    */
   getInspections(pageIndex: number = 1, pageSize: number = 10) {
-    const params = {
-      _page: pageIndex,
-      _limit: pageSize
-    };
     this.loading = true;
-    this.inspectionsService.getInspections(params).pipe(
-      tap((res: HttpResponse<any>) => {
-        this.displayedList = res.body;
-        this.total = Number(res.headers.get('X-Total-Count'));
-      }),
-      catchError((err) => {
-        this.total = 0;
-        this.displayedList = [];
-        return EMPTY;
-      })
-    ).subscribe(() => {
+    this.supabase.getInspections(pageIndex, pageSize)?.then(({ data, error, count }) => {
       this.loading = false;
+      if (error) {
+        console.error(error);
+        return;
+      }
+      this.displayedList = data || [];
+      this.total = count || 0;
     });
   }
 
@@ -95,6 +85,25 @@ export class InspectionsComponent implements OnInit {
     });
   }
 
+  /**
+   * 檢查是否可以開啟連結
+   * @param date
+   */
+  canOpenLink(date: string): boolean {
+    if (!date) return false;
+    const now = new Date();
+    const target = new Date(date);
+    const diff = (target.getTime() - now.getTime()) / (1000 * 60); // 分鐘
+    return diff <= 30;
+  }
+
+  /**
+   * 開啟檢測連結
+   * @param url
+   */
+  openLink(url: string): void {
+    window.open(url, '_blank');
+  }
 
 
 

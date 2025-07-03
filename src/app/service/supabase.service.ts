@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { env } from '../env/environment';
+import { Database } from '../types/supabase';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +14,12 @@ export class SupabaseService {
     this.createClient();
   }
 
+  /**
+   * 建立 Supabase 客戶端
+   */
   createClient() {
-    if (typeof window === 'undefined' || createClient === undefined) return;
-    this.supabase = createClient(env.supabaseUrl, env.supabaseKey);
+    if (typeof window === 'undefined' || createClient<Database> === undefined) return;
+    this.supabase = createClient<Database>(env.supabaseUrl, env.supabaseKey);
   }
 
   /**
@@ -26,7 +30,8 @@ export class SupabaseService {
   getProducts(page: number, limit: number) {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
-    return this.supabase?.from('products').select('*', { count: 'exact' }).order('update', { ascending: false }).order('id').range(from, to);
+    return this.supabase?.from('products').select('*',
+      { count: 'exact' }).order('update', { ascending: false }).order('id').range(from, to);
   }
 
   /**
@@ -92,5 +97,48 @@ export class SupabaseService {
     return imageUrl;
   }
 
-  
+  /**
+   * 取得所有訂單
+   */
+  getOrders(page: number, limit: number) {
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    return this.supabase?.from('orders').select(`*,
+      order_items(order_id, name, quantity, pay, shipping)`,
+      { count: 'exact' }).order('update', { ascending: false }).order('id').range(from, to);
+  }
+
+  /**
+   * 編輯訂單
+   */
+  editOrder(id: string, data: any) {
+    return this.supabase?.from('orders').update(data).eq('id', id);
+  }
+
+  /**
+   * 取得所有檢測
+   * @param page
+   * @param limit
+   */
+  getInspections(page: number, limit: number) {
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    return this.supabase?.from('inspections').select('*', { count: 'exact' }).order('update', { ascending: false }).order('id').range(from, to);
+  }
+
+  /**
+   * 新增檢測
+   * @param data
+   */
+  addInspection(data: any) {
+    return this.supabase?.from('inspections').insert([data]);
+  }
+
+
+  getChartData(){
+    return this.supabase?.from('chart').select('*');
+  }
+
+
+
 }

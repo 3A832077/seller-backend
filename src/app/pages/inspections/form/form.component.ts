@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { CommonModule, formatDate } from '@angular/common';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  FormGroup,
-  FormBuilder,
-  Validators,
-} from '@angular/forms';
+import { FormsModule,ReactiveFormsModule,FormGroup,FormBuilder,Validators } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -15,7 +9,6 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzModalRef } from 'ng-zorro-antd/modal';
-import { ProductsService } from '../../products/products.service';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { InspectionsService } from '../inspections.service';
@@ -76,7 +69,6 @@ export class FormComponent implements OnInit {
     private fb: FormBuilder,
     private message: NzMessageService,
     private modal: NzModalRef,
-    private productsService: ProductsService,
     private inspectionsService: InspectionsService,
     private authService: AuthService,
     private http: HttpClient,
@@ -108,7 +100,8 @@ export class FormComponent implements OnInit {
       this.form.get('detailTime')?.setValue(null); // 清除已選的詳細時間
       const [start, end] = event.split(' - ');
       this.generateDetailTime(start, end);
-    } else {
+    }
+    else {
       this.detailTimeList = [];
       this.form.get('detailTime')?.setValue(null);
     }
@@ -256,26 +249,21 @@ export class FormComponent implements OnInit {
         category: this.form.value.category,
         date: this.form.value.date,
         detailTime: this.form.value.detailTime,
-        cardNumber: this.form.value.cardNumber,
-        expiryDate: formatDate(this.form.value.expiryDate, 'MM/YYYY', 'zh-TW'),
-        csv: this.form.value.csv,
         url: this.meetUrl,
+        update: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'zh-TW', '+0800'),
       };
 
-      this.inspectionsService
-        .addInspection(data)
-        .pipe(
-          tap((res) => {
-            this.modal.close('success');
-            this.message.success('新增成功');
-          }),
-          catchError((err) => {
-            this.message.error('新增失敗');
-            return EMPTY;
-          })
-        )
-        .subscribe(() => {});
-    } else {
+      this.supabase.addInspection(data)?.then(({data, error}) => {
+        if (error) {
+          console.error(error);
+          this.message.error('新增檢測失敗');
+          return;
+        }
+        this.message.success('新增成功');
+        this.modal.close('success');
+      });
+    }
+    else {
       // 表單驗證
       Object.values(this.form.controls).forEach((control) => {
         if (control.invalid) {

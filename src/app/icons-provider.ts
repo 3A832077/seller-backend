@@ -7,11 +7,13 @@ import {
   ShoppingOutline,
   SolutionOutline,
   AuditOutline,
-  PlusOutline
+  PlusOutline,
+  InfoCircleOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
   MenuFoldOutline, MenuUnfoldOutline, FormOutline,
   ShoppingOutline, MenuOutline, BarChartOutline,
-  SolutionOutline, AuditOutline, PlusOutline
+  SolutionOutline, AuditOutline, PlusOutline,
+  InfoCircleOutline
 ];

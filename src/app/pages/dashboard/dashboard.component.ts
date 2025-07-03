@@ -11,8 +11,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NzRateModule } from 'ng-zorro-antd/rate';
 import { FormsModule } from '@angular/forms';
-import { DashboardService } from './dashboard.service';
-import { tap, catchError, EMPTY } from 'rxjs';
+import { SupabaseService } from '../../service/supabase.service';
 echarts.use([BarChart, GridComponent, CanvasRenderer, PieChart,
   TooltipComponent, LegendComponent, LineChart]);
 
@@ -41,7 +40,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
                 @Inject(PLATFORM_ID) platformId: Object,
-                private dashboardService: DashboardService,
+                public supabase: SupabaseService
              ) {
                 this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -54,17 +53,15 @@ export class DashboardComponent implements OnInit {
    * 取得圖表資料
    */
   getChartsData() {
-    this.dashboardService.getCharts().pipe(
-      tap((res: any) => {
-        this.chartData = res;
-      }),
-      catchError((err) => {
-        console.error(err);
-        return EMPTY;
-      })).subscribe(() => {
-        this.getBarOptions();
-        this.getPieOptions();
-      });
+    this.supabase.getChartData()?.then(({ data, error }) => {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      this.chartData = data || [];
+      this.getBarOptions();
+      this.getPieOptions();
+    });
   }
 
   /**

@@ -31,21 +31,24 @@
       <td>{{ item.product }}</td>
       <td>{{ item.category }}</td>
       <td>
-        <ng-container *ngIf="item.pass">
-          <ng-container *ngIf="item.pass === 1; else notPass">通過</ng-container>
-          <ng-template #notPass>不通過</ng-template>
+        <ng-container [ngSwitch]="item.pass">
+          <ng-container *ngSwitchCase="1">通過</ng-container>
+          <ng-container *ngSwitchCase="0">不通過</ng-container>
+          <ng-container *ngSwitchDefault>尚未檢測</ng-container>
         </ng-container>
       </td>
       <td>
-        <ng-container *ngIf="item.excellent">
-          <ng-container *ngIf="item.excellent === 1; else notExcellent">優良</ng-container>
-          <ng-template #notExcellent>非優良</ng-template>
+        <ng-container [ngSwitch]="item.excellent">
+          <ng-container *ngSwitchCase="1">優良</ng-container>
+          <ng-container *ngSwitchCase="0">非優良</ng-container>
+          <ng-container *ngSwitchDefault>尚未檢測</ng-container>
         </ng-container>
       </td>
       <td>{{ item.date }}</td>
       <td>
         <ng-container *ngIf="item.url">
-          <a [href]="item.url" target="_blank">檢測連結</a>
+          <button nz-button nzType="link" [disabled]="!canOpenLink(item.date)"
+            (click)="openLink(item.url)">檢測連結</button>
         </ng-container>
       </td>
     </tr>

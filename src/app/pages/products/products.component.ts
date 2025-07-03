@@ -8,9 +8,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { catchError, EMPTY, tap } from 'rxjs';
 import { FormComponent } from './form/form.component';
-import { ProductsService } from './products.service';
 import { SupabaseService } from '../../service/supabase.service';
 
 @Component({
@@ -40,7 +38,6 @@ export class ProductsComponent implements OnInit {
 
   constructor(
                 private modalService: NzModalService,
-                private productsService: ProductsService,
                 private supabase: SupabaseService
              ) { }
 
