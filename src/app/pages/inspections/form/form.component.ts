@@ -11,7 +11,6 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { InspectionsService } from '../inspections.service';
 import { AuthService } from '../../../service/auth.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { env } from '../../../env/environment';
@@ -69,7 +68,6 @@ export class FormComponent implements OnInit {
     private fb: FormBuilder,
     private message: NzMessageService,
     private modal: NzModalRef,
-    private inspectionsService: InspectionsService,
     private authService: AuthService,
     private http: HttpClient,
     private supabase: SupabaseService,

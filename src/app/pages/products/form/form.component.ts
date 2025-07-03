@@ -11,8 +11,6 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { ProductsService } from '../products.service';
-import { catchError, EMPTY, tap } from 'rxjs';
 import { SupabaseService } from '../../../service/supabase.service';
 
 @Component({
@@ -40,7 +38,6 @@ export class FormComponent implements OnInit{
                 private fb: FormBuilder,
                 private message: NzMessageService,
                 private modal: NzModalRef,
-                private productsService: ProductsService,
                 public supabase: SupabaseService
               ){}
 

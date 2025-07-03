@@ -8,7 +8,6 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { InspectionsService } from './inspections.service';
 import { FormComponent } from './form/form.component';
 import { SupabaseService } from '../../service/supabase.service';
 
