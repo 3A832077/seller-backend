@@ -93,7 +93,7 @@ export class InspectionsComponent implements OnInit {
     const now = new Date();
     const target = new Date(date);
     const diff = (target.getTime() - now.getTime()) / (1000 * 60); // 分鐘
-    return diff <= 30;
+    return diff <= 30 && diff >= -15;
   }
 
   /**
