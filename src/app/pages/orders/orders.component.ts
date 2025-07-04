@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -106,7 +106,11 @@ export class OrdersComponent implements OnInit {
    * @param event
    */
   updateOrders(id:string, event: any, col: string): void {
-    this.supabaseService.editOrder(id, { [col]: event })?.then(response => {
+    const params = {
+      [col]: event,
+      update: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'zh-TW', '+0800')
+    }
+    this.supabaseService.editOrder(id, params)?.then(response => {
       const { error } = response;
       if (error) {
         console.error(error);

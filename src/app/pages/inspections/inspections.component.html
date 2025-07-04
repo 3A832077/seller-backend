@@ -23,7 +23,8 @@
       <th>是否通過</th>
       <th>是否優良</th>
       <th>鑑定日期&時間</th>
-      <th>檢測連結</th>
+      <th nzWidth="220px">檢測連結</th>
+      <th>更新時間</th>
     </tr>
   </thead>
   <tbody>
@@ -53,6 +54,7 @@
           </button>
         </ng-container>
       </td>
+      <td>{{ item.update | date: 'yyyy-MM-dd' }}</td>
     </tr>
   </tbody>
 </nz-table>

@@ -22,6 +22,7 @@
           matTooltipPosition="above" style="padding-left: 5px;"/>
       </th>
       <th>買家評論</th>
+      <th>更新時間</th>
     </tr>
   </thead>
   <tbody>
@@ -53,6 +54,7 @@
             [disabled]="(order.date && (dateDiff(order.update, order.date) > 7))"
             placeholder="請輸入評論" style="width: 100%; margin-top: 10px;">
         </td>
+        <td>{{ order.update | date: 'yyyy-MM-dd' }}</td>
       </tr>
       <tr [nzExpand]="order.expand">
         <nz-table [nzData]="order.order_items" nzSize="middle" [nzShowPagination]="false" class="mt-3">
