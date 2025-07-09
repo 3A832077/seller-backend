@@ -28,8 +28,10 @@
       </nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="17" [nzLg]="17" [nzXl]="18" [nzMd]="17">
         <nz-select formControlName="category" nzPlaceHolder="請選擇商品類別" nzShowSearch nzAllowClear>
-          <nz-option *ngFor="let category of categoryList" [nzValue]="category.id" [nzLabel]="category.name">
-          </nz-option>
+          @for (category of categoryList; track category) {
+            <nz-option [nzValue]="category.id" [nzLabel]="category.name">
+            </nz-option>
+          }
         </nz-select>
       </nz-form-control>
     </nz-form-item>

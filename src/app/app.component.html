@@ -3,7 +3,7 @@
     [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzTheme="light">
     <div class="sidebar-logo">
       <span class="header-trigger" (click)="isCollapsed = !isCollapsed"
-            [ngStyle]="{'padding': isCollapsed ? '20px 20px' : '20px 13px'}">
+        [ngStyle]="{'padding': isCollapsed ? '20px 20px' : '20px 13px'}">
         <span class="trigger" nz-icon nzType="menu"></span>
       </span>
       <a routerLink="/dashboard">
@@ -17,7 +17,7 @@
         <span>統計資料</span>
       </li>
       <li nz-menu-item routerLink="/products" [nzSelected]="isActive('/products')"
-          [matTooltip]="isCollapsed ? '商品管理' : ''" matTooltipPosition="right">
+        [matTooltip]="isCollapsed ? '商品管理' : ''" matTooltipPosition="right">
         <nz-icon nzType="shopping" />
         <span>商品管理</span>
       </li>
@@ -36,32 +36,38 @@
   <nz-layout>
     <nz-header>
       <div class="header-content" [ngStyle]="{'justify-content': isCollapsed ? 'space-between' : 'flex-end'}">
-        <div style="margin-left:80px;" *ngIf="isCollapsed">
-          <a routerLink="/dashboard">
-            <img src="/img/icon.png" alt="logo" height="50" width="70" />
-          </a>
-        </div>
+        @if (isCollapsed) {
+          <div style="margin-left:80px;">
+            <a routerLink="/dashboard">
+              <img src="/img/icon.png" alt="logo" height="50" width="70" />
+            </a>
+          </div>
+        }
         <div class="userPicDiv">
-          <a *ngIf="auth.isLoggedIn()" (click)="toggleDropdown()">
-            <img [src]="picUrl" class="userPic">
-          </a>
-          <mat-card appearance="outlined" *ngIf="isDropdownOpen">
-            <mat-card-header>
-              <mat-card-subtitle>
-                {{ userEmail }}
-                <button nz-button nzType="link" style="color: black;" (click)="toggleDropdown()">
-                  <span nz-icon nzType="close" matTooltip="關閉"></span>
-                </button>
-              </mat-card-subtitle>
-              <mat-card-title style="padding-bottom: 15px;">
-                <img [src]="picUrl">
-              </mat-card-title>
-              <mat-card-title style="padding-bottom: 10px;">{{ userName }} 您好!</mat-card-title>
-            </mat-card-header>
-            <mat-card-actions>
-              <button nz-button (click)="auth.logout()">登出</button>
-            </mat-card-actions>
-          </mat-card>
+          @if (auth.isLoggedIn()) {
+            <a (click)="toggleDropdown()">
+              <img [src]="picUrl" class="userPic">
+            </a>
+          }
+          @if (isDropdownOpen) {
+            <mat-card appearance="outlined">
+              <mat-card-header>
+                <mat-card-subtitle>
+                  {{ userEmail }}
+                  <button nz-button nzType="link" style="color: black;" (click)="toggleDropdown()">
+                    <span nz-icon nzType="close" matTooltip="關閉"></span>
+                  </button>
+                </mat-card-subtitle>
+                <mat-card-title style="padding-bottom: 15px;">
+                  <img [src]="picUrl">
+                </mat-card-title>
+                <mat-card-title style="padding-bottom: 10px;">{{ userName }} 您好!</mat-card-title>
+              </mat-card-header>
+              <mat-card-actions>
+                <button nz-button (click)="auth.logout()">登出</button>
+              </mat-card-actions>
+            </mat-card>
+          }
         </div>
       </div>
     </nz-header>

@@ -26,12 +26,16 @@
   <nz-row [nzGutter]="24">
     <nz-col [nzSpan]="12">
       <nz-card nzTitle="各商品銷售量">
-        <div echarts [options]="barOptions" *ngIf="isBrowser" class="chartDiv"></div>
+        @if (isBrowser) {
+          <div echarts [options]="barOptions" class="chartDiv"></div>
+        }
       </nz-card>
     </nz-col>
     <nz-col [nzSpan]="12">
       <nz-card nzTitle="各類別銷售額佔比">
-        <div echarts [options]="pieOptions" *ngIf="isBrowser" class="chartDiv"></div>
+        @if (isBrowser) {
+          <div echarts [options]="pieOptions" class="chartDiv"></div>
+        }
       </nz-card>
     </nz-col>
   </nz-row>

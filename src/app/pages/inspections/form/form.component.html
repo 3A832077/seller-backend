@@ -4,27 +4,35 @@
       <nz-form-label [nzSpan]="4">商品類別</nz-form-label>
       <nz-form-control [nzSpan]="18">
         <nz-select formControlName="category" nzPlaceHolder="請選擇商品類別" nzShowSearch nzAllowClear (ngModelChange)="categoryChange($event)">
-          <nz-option *ngFor="let category of categoryList" [nzValue]="category.name" [nzLabel]="category.name"></nz-option>
+          @for (category of categoryList; track category) {
+            <nz-option [nzValue]="category.name" [nzLabel]="category.name"></nz-option>
+          }
         </nz-select>
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" class="pb-10" *ngIf="form.get('category')?.value">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="4">商品名稱</nz-form-label>
-      <nz-form-control [nzSpan]="18">
-        <nz-select formControlName="product" nzPlaceHolder="請選擇產品" nzShowSearch nzAllowClear>
-          <nz-option *ngFor="let product of selectedProducts" [nzValue]="product" [nzLabel]="product"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-  </div>
+  @if (form.get('category')?.value) {
+    <div nz-col nzSpan="24" class="pb-10">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="4">商品名稱</nz-form-label>
+        <nz-form-control [nzSpan]="18">
+          <nz-select formControlName="product" nzPlaceHolder="請選擇產品" nzShowSearch nzAllowClear>
+            @for (product of selectedProducts; track product) {
+              <nz-option [nzValue]="product" [nzLabel]="product"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  }
   <div nz-col nzSpan="24" class="pb-10">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">檢測日期</nz-form-label>
       <nz-form-control [nzSpan]="18">
         <nz-select formControlName="date" nzPlaceHolder="請選擇檢測日期" nzShowSearch nzAllowClear >
-          <nz-option *ngFor="let date of weekList" [nzLabel]="date.label" [nzValue]="date.value"></nz-option>
+          @for (date of weekList; track date) {
+            <nz-option [nzLabel]="date.label" [nzValue]="date.value"></nz-option>
+          }
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -34,21 +42,27 @@
       <nz-form-label nzSpan="4">檢測時段</nz-form-label>
       <nz-form-control [nzSpan]="18">
         <nz-select formControlName="time" nzPlaceHolder="請選擇檢測時段" nzShowSearch nzAllowClear (ngModelChange)="timeChange($event)">
-          <nz-option *ngFor="let time of timeList" [nzLabel]="time.label" [nzValue]="time.label"></nz-option>
+          @for (time of timeList; track time) {
+            <nz-option [nzLabel]="time.label" [nzValue]="time.label"></nz-option>
+          }
         </nz-select>
       </nz-form-control>
     </nz-form-item>
   </div>
-  <div nz-col nzSpan="24" class="pb-10" *ngIf="form.get('time')?.value">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="4">詳細時間</nz-form-label>
-      <nz-form-control [nzSpan]="18">
-        <nz-select formControlName="detailTime" nzPlaceHolder="請選擇詳細時間" nzShowSearch nzAllowClear>
-          <nz-option *ngFor="let detail of detailTimeList" [nzLabel]="detail.label" [nzValue]="detail.value"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-  </div>
+  @if (form.get('time')?.value) {
+    <div nz-col nzSpan="24" class="pb-10">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="4">詳細時間</nz-form-label>
+        <nz-form-control [nzSpan]="18">
+          <nz-select formControlName="detailTime" nzPlaceHolder="請選擇詳細時間" nzShowSearch nzAllowClear>
+            @for (detail of detailTimeList; track detail) {
+              <nz-option [nzLabel]="detail.label" [nzValue]="detail.value"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  }
   <div nz-col nzSpan="24" class="pb-10">
     <nz-form-item>
       <nz-form-label [nzSpan]="4">持卡人姓名</nz-form-label>
@@ -63,14 +77,18 @@
         <nz-form-label [nzSpan]="6">信用卡號</nz-form-label>
         <nz-form-control [nzSpan]="18">
           <input nz-input formControlName="cardNumber" maxlength="16" autocomplete="cc-number" (ngModelChange)="checkCardType($event)"/>
-          <div *ngIf="form.get('cardNumber')?.errors" class="error">
-            <span>無效的信用卡號</span>
-          </div>
+          @if (form.get('cardNumber')?.errors) {
+            <div class="error">
+              <span>無效的信用卡號</span>
+            </div>
+          }
         </nz-form-control>
       </nz-form-item>
     </div>
     <div nz-col nzSpan="6">
-      <img [src]="cardTypeImg" alt="信用卡類型" height="32px" *ngIf="cardTypeImg"/>
+      @if (cardTypeImg) {
+        <img [src]="cardTypeImg" alt="信用卡類型" height="32px"/>
+      }
     </div>
   </div>
   <div nz-row nzGutter="12">
@@ -80,9 +98,11 @@
         <nz-form-control [nzSpan]="14">
           <nz-date-picker formControlName="expiryDate" nzFormat="MM/YYYY" nzMode="month" nzPlaceHolder="請選擇到期日">
           </nz-date-picker>
-          <div *ngIf="form.get('expiryDate')?.errors" class="error">
-            <span>這張卡已過期</span>
-          </div>
+          @if (form.get('expiryDate')?.errors) {
+            <div class="error">
+              <span>這張卡已過期</span>
+            </div>
+          }
         </nz-form-control>
       </nz-form-item>
     </div>
@@ -91,9 +111,11 @@
         <nz-form-label [nzSpan]="11">安全碼</nz-form-label>
         <nz-form-control [nzSpan]="11">
           <input nz-input formControlName="csv" maxlength="3" style="width: 80px" type="password" autocomplete="cc-csc"/>
-          <div *ngIf="form.get('csv')?.errors" class="error">
-            <span>無效的安全碼</span>
-          </div>
+          @if (form.get('csv')?.errors) {
+            <div class="error">
+              <span>無效的安全碼</span>
+            </div>
+          }
         </nz-form-control>
       </nz-form-item>
     </div>

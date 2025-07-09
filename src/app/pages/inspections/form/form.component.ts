@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { CommonModule, formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { FormsModule,ReactiveFormsModule,FormGroup,FormBuilder,Validators } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -21,7 +21,6 @@ import { SupabaseService } from '../../../service/supabase.service';
 @Component({
   selector: 'inspections-form',
   imports: [
-    CommonModule,
     NzFormModule,
     FormsModule,
     ReactiveFormsModule,
@@ -30,8 +29,8 @@ import { SupabaseService } from '../../../service/supabase.service';
     NzIconModule,
     NzDividerModule,
     NzSelectModule,
-    NzDatePickerModule,
-  ],
+    NzDatePickerModule
+],
   templateUrl: './form.component.html',
   styleUrl: './form.component.css',
 })

@@ -1,15 +1,15 @@
 <nz-table #filterTable
-          [nzData]="displayedList"
-          [nzTotal]="total"
-          [nzPageSize]="pageSize"
-          [nzPageIndex]="pageIndex"
-          [nzLoading]="loading"
-          [nzShowTotal]="totalTemplate"
-          nzShowSizeChanger
-          nzFrontPagination="false"
-          (nzPageIndexChange)="getOrders($event, pageSize)"
-          (nzPageSizeChange)="getOrders(pageIndex, $event)"
-          ngSkipHydration>
+  [nzData]="displayedList"
+  [nzTotal]="total"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="pageIndex"
+  [nzLoading]="loading"
+  [nzShowTotal]="totalTemplate"
+  nzShowSizeChanger
+  nzFrontPagination="false"
+  (nzPageIndexChange)="getOrders($event, pageSize)"
+  (nzPageSizeChange)="getOrders(pageIndex, $event)"
+  ngSkipHydration>
   <thead>
     <tr>
       <th nzWidth="20px"></th>
@@ -20,73 +20,89 @@
         訂單金額
         <nz-icon nzType="info-circle" nzTheme="outline" matTooltip="點擊可編輯狀態"
           matTooltipPosition="above" style="padding-left: 5px;"/>
-      </th>
-      <th>買家評論</th>
-      <th>更新時間</th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let order of filterTable.data">
-      <tr class="editable-row">
-        <td [(nzExpand)]="order.expand"></td>
-        <td>{{ order.date }}</td>
-        <td>{{ order.id }}</td>
-        <td>
-          <div class="editable-cell" [hidden]="editId === order.id" (click)="startEdit(order.id)">
-            {{ statusMap[order.status] }}
-          </div>
-          <nz-select [hidden]="editId !== order.id" [(ngModel)]="order.status" (ngModelChange)="updateOrders(order.id, $event, 'status')">
-            <nz-option *ngFor="let status of statusList" [nzValue]="status.value" [nzLabel]="status.label"></nz-option>
-          </nz-select>
-        </td>
-        <td>${{ order.price }}</td>
-        <td>
-          <div>
-            <nz-rate [ngModel]="order.score" (ngModelChange)="updateOrders(order.id, $event, 'score')"
-              [nzDisabled]="(order.date && (dateDiff(order.update, order.date) > 7))" nzAllowHalf>
-            </nz-rate>
-          </div>
-          <div style="padding-top: 10px;" [hidden]="editId === order.id" (click)="startEdit(order.id)" class="editable-cell">
-            {{ order.comment !== '' ? order.comment : '尚未評論' }}
-          </div>
-          <input [hidden]="editId !== order.id" [(ngModel)]="order.comment"
-            (blur)="updateOrders(order.id, order.comment, 'comment')"
-            [disabled]="(order.date && (dateDiff(order.update, order.date) > 7))"
-            placeholder="請輸入評論" style="width: 100%; margin-top: 10px;">
-        </td>
-        <td>{{ order.update | date: 'yyyy-MM-dd' }}</td>
+        </th>
+        <th>買家評論</th>
+        <th>更新時間</th>
       </tr>
-      <tr [nzExpand]="order.expand">
-        <nz-table [nzData]="order.order_items" nzSize="middle" [nzShowPagination]="false" class="mt-3">
-          <thead>
-            <tr>
-              <th>商品名稱</th>
-              <th>商品數量</th>
-              <th>付款方式</th>
-              <th>運送方式</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let product of order.order_items">
-              <td>{{ product.name }}</td>
-              <td>{{ product.quantity }}</td>
-              <td>
-                <span *ngIf="product.pay === '0'">信用卡</span>
-                <span *ngIf="product.pay === '1'">現金</span>
-              </td>
-              <td>
-                <span *ngIf="product.shipping === '0'">宅配</span>
-                <span *ngIf="product.shipping === '1'">超商取貨(7-11)</span>
-                <span *ngIf="product.shipping === '2'">超商取貨(全家)</span>
-                <span *ngIf="product.shipping === '3'">超商取貨(萊爾富)</span>
-              </td>
-            </tr>
-          </tbody>
-        </nz-table>
-      </tr>
-    </ng-container>
-  </tbody>
-</nz-table>
-<ng-template #totalTemplate>
-  總共 {{ total }} 筆
-</ng-template>
+    </thead>
+    <tbody>
+      @for (order of filterTable.data; track order) {
+        <tr class="editable-row">
+          <td [(nzExpand)]="order.expand"></td>
+          <td>{{ order.date }}</td>
+          <td>{{ order.id }}</td>
+          <td>
+            <div class="editable-cell" [hidden]="editId === order.id" (click)="startEdit(order.id)">
+              {{ statusMap[order.status] }}
+            </div>
+            <nz-select [hidden]="editId !== order.id" [(ngModel)]="order.status" (ngModelChange)="updateOrders(order.id, $event, 'status')">
+              @for (status of statusList; track status) {
+                <nz-option [nzValue]="status.value" [nzLabel]="status.label"></nz-option>
+              }
+            </nz-select>
+          </td>
+          <td>${{ order.price }}</td>
+          <td>
+            <div>
+              <nz-rate [ngModel]="order.score" (ngModelChange)="updateOrders(order.id, $event, 'score')"
+                [nzDisabled]="(order.date && (dateDiff(order.update, order.date) > 7))" nzAllowHalf>
+              </nz-rate>
+            </div>
+            <div style="padding-top: 10px;" [hidden]="editId === order.id" (click)="startEdit(order.id)" class="editable-cell">
+              {{ order.comment !== '' ? order.comment : '尚未評論' }}
+            </div>
+            <input [hidden]="editId !== order.id" [(ngModel)]="order.comment"
+              (blur)="updateOrders(order.id, order.comment, 'comment')"
+              [disabled]="(order.date && (dateDiff(order.update, order.date) > 7))"
+              placeholder="請輸入評論" style="width: 100%; margin-top: 10px;">
+            </td>
+            <td>{{ order.update | date: 'yyyy-MM-dd' }}</td>
+          </tr>
+          <tr [nzExpand]="order.expand">
+            <nz-table [nzData]="order.order_items" nzSize="middle" [nzShowPagination]="false" class="mt-3">
+              <thead>
+                <tr>
+                  <th>商品名稱</th>
+                  <th>商品數量</th>
+                  <th>付款方式</th>
+                  <th>運送方式</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (product of order.order_items; track product) {
+                  <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>
+                      @if (product.pay === '0') {
+                        <span>信用卡</span>
+                      }
+                      @if (product.pay === '1') {
+                        <span>現金</span>
+                      }
+                    </td>
+                    <td>
+                      @if (product.shipping === '0') {
+                        <span>宅配</span>
+                      }
+                      @if (product.shipping === '1') {
+                        <span>超商取貨(7-11)</span>
+                      }
+                      @if (product.shipping === '2') {
+                        <span>超商取貨(全家)</span>
+                      }
+                      @if (product.shipping === '3') {
+                        <span>超商取貨(萊爾富)</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+    <ng-template #totalTemplate>
+      總共 {{ total }} 筆
+    </ng-template>
