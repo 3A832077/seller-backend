@@ -44,11 +44,7 @@
           </div>
         }
         <div class="userPicDiv">
-          @if (auth.isLoggedIn()) {
-            <a (click)="toggleDropdown()">
-              <img [src]="picUrl" class="userPic">
-            </a>
-          }
+          <span (click)="openModal()">登入</span>
           @if (isDropdownOpen) {
             <mat-card appearance="outlined">
               <mat-card-header>
@@ -64,7 +60,7 @@
                 <mat-card-title style="padding-bottom: 10px;">{{ userName }} 您好!</mat-card-title>
               </mat-card-header>
               <mat-card-actions>
-                <button nz-button (click)="auth.logout()">登出</button>
+                <button nz-button >登出</button>
               </mat-card-actions>
             </mat-card>
           }

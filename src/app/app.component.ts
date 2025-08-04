@@ -5,10 +5,11 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AuthService } from './service/auth.service';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { MatCardModule } from '@angular/material/card';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { LoginComponent } from './pages/login/login.component';
 
 @Component({
     selector: 'app-root',
@@ -16,7 +17,7 @@ import { MatCardModule } from '@angular/material/card';
                 CommonModule, RouterLink, RouterOutlet,
                 NzIconModule, NzLayoutModule, NzMenuModule,
                 MatTooltipModule, NzButtonModule, NzAvatarModule,
-                MatCardModule
+                MatCardModule, NzModalModule
              ],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
@@ -35,14 +36,8 @@ export class AppComponent implements OnInit {
 
   constructor(
                 private router: Router,
-                public auth: AuthService,
-              ) {
-                  if (typeof window !== 'undefined') {
-                    this.userEmail = localStorage.getItem('email') || '';
-                    this.userName = localStorage.getItem('name') || '';
-                    this.picUrl = localStorage.getItem('picture') || '';
-                  }
-               }
+                private modalService: NzModalService
+              ) {}
   ngOnInit() {
   }
 
@@ -58,5 +53,17 @@ export class AppComponent implements OnInit {
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  openModal() {
+    this.modalService.create({
+      nzTitle: '登入',
+      nzContent: LoginComponent,
+      nzFooter: null,
+      nzClosable: true,
+      nzWidth: '400px',
+      nzCentered: true,
+      nzMaskClosable: true
+    });
   }
 }

@@ -31,7 +31,7 @@ export class AuthService {
       }
     }
   }
-  
+
   /**
    * 載入 Google SDK
    * @returns

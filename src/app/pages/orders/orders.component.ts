@@ -121,25 +121,4 @@ export class OrdersComponent implements OnInit {
       this.editId = null;
     });
   }
-
-  /**
-   * 計算兩個日期之間的天數差
-   * @param date1
-   * @param date2
-   */
-  dateDiff(date1: string, date2: string): number {
-    const d1 = new Date(date1);
-    const d2 = new Date(date2);
-    const diffTime = Math.abs(d1.getTime() - d2.getTime());
-    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  }
-
-
-
-
-
-
-
-
-
 }
