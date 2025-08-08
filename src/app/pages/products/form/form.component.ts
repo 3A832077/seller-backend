@@ -53,7 +53,7 @@ export class FormComponent implements OnInit{
       price: [this.data?.price || null],
       info: [this.data?.info || null],
       category: [this.data?.category || null],
-      stock: [this.data?.stock || null],
+      stock: [this.data?.stock || 0],
       status: [this.data?.status || true],
     });
     if (this.data?.imageUrl) {

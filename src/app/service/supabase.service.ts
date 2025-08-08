@@ -17,6 +17,7 @@ export class SupabaseService {
 
   constructor() {
     this.createClient();
+    this.loginState();
   }
 
   /**
@@ -95,11 +96,23 @@ export class SupabaseService {
    * @param page
    * @param limit
    */
-  getProducts(page: number, limit: number) {
+  getProducts(page: number, limit: number, searchTerm: any, sortField: string = 'update', sortOrder: boolean = false, category: any = null) {
+    let query = this.supabase?.from('products').select('*', { count: 'exact' });
+
     const from = (page - 1) * limit;
     const to = from + limit - 1;
-    return this.supabase?.from('products').select('*',
-      { count: 'exact' }).order('update', { ascending: false }).order('id').range(from, to);
+
+    if (Array.isArray(category) && category.length > 0) {
+      query = query?.in('category', category);
+    }
+    else if (category !== undefined && category !== null) {
+      query = query?.eq('category', category);
+    }
+
+    return query?.order(sortField, { ascending: sortOrder })
+      .ilike('name', `%${searchTerm}%`)
+      .order('id')
+      .range(from, to);
   }
 
   /**
@@ -167,17 +180,22 @@ export class SupabaseService {
 
   /**
    * 取得所有訂單
+   * @param page
+   * @param limit
+   * @param col
+   * @param order
    */
-  getOrders(page: number, limit: number) {
+  getOrders(page: number, limit: number, col: string = 'update', order: boolean = false) {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
-    return this.supabase?.from('orders').select(`*,
-      order_items(order_id, name, quantity, pay, shipping)`,
-      { count: 'exact' }).order('update', { ascending: false }).order('id').range(from, to);
+    return this.supabase?.from('orders').select(`*,order_items(*)`, { count: 'exact' }).
+    order(col, { ascending: order }).range(from, to);
   }
 
   /**
    * 編輯訂單
+   * @param id
+   * @param data
    */
   editOrder(id: string, data: any) {
     return this.supabase?.from('orders').update(data).eq('id', id);
@@ -202,11 +220,18 @@ export class SupabaseService {
     return this.supabase?.from('inspections').insert([data]);
   }
 
-
-  getChartData(){
-    return this.supabase?.from('chart').select('*');
+  /**
+   * 取得各類別銷售量
+   */
+  getCategorySales(){
+    return this.supabase?.from('order_items').select(`quantity, products_id, products (category, categories (name))`);
   }
 
-
+  /**
+   * 取得所有訂單數量
+   */
+  getAllOrders() {
+    return this.supabase?.from('orders').select('*', { count: 'exact' });
+  }
 
 }

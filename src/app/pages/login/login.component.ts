@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
         console.error(result.error);
       }
       else {
-        window.location.href = '/home';
+        window.location.href = '/dashboard';
       }
     }
   }
@@ -97,6 +97,7 @@ export class LoginComponent implements OnInit {
    * 忘記密碼
    */
   openModal(tplContent: TemplateRef<{}>) {
+    this.close();
     const modal = this.modalService.create({
       nzTitle: '忘記密碼',
       nzContent: tplContent,

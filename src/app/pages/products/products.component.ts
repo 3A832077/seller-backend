@@ -36,6 +36,16 @@ export class ProductsComponent implements OnInit {
 
   categoryList: any[] = [];
 
+  searchTerm: string = '';
+
+  sortField: string = 'update';
+
+  sortOrder: boolean = false;
+
+  categoryFilter: any[] = [];
+
+  selectedCategory: any = null;
+
   constructor(
                 private modalService: NzModalService,
                 private supabase: SupabaseService
@@ -55,6 +65,7 @@ export class ProductsComponent implements OnInit {
         return;
       }
       this.categoryList = data || [];
+      this.categoryFilter = this.categoryList.map(item => ({ text: item.name, value: item.id }));
       this.getProducts();
     });
   }
@@ -63,14 +74,16 @@ export class ProductsComponent implements OnInit {
    * 取得產品列表
    * @param pageIndex
    * @param pageSize
+   * @param sortField
+   * @param sortOrder
+   * @param searchTerm
    */
-  getProducts(pageIndex: number = 1, pageSize: number = 10){
+  getProducts(pageIndex: number = 1, pageSize: number = 10, sortField: string = 'update', sortOrder: boolean = false, searchTerm: string = '', category?: any) {
     this.loading = true;
-    this.supabase.getProducts(pageIndex, pageSize)?.then(({ data, error, count }) => {
+    this.supabase.getProducts(pageIndex, pageSize, searchTerm, sortField, sortOrder, category)?.then(({ data, error, count }) => {
       this.loading = false;
       if (error){
         console.error('取得產品列表失敗', error);
-        this.loading = false;
         return;
       }
       this.total = count || 0;
@@ -123,6 +136,26 @@ export class ProductsComponent implements OnInit {
     });
   }
 
+  /**
+   * 排序&篩選
+   * @param sort
+   * @param column
+   */
+  filterSort(sort: any, column: string, category: any) {
+    const sortField = column;
+    const sortOrder = sort === 'ascend' || sort ? true : false;
+    if (!category || category?.length === 0) {
+      category = null;
+    }
+    this.getProducts(this.pageIndex, this.pageSize, sortField, sortOrder, this.searchTerm, category);
+  }
+
+  /**
+   * 搜尋
+   */
+  onSearch() {
+    this.getProducts(this.pageIndex, this.pageSize, this.sortField, this.sortOrder, this.searchTerm, this.selectedCategory);
+  }
 
 
 }

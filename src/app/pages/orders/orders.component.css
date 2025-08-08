@@ -13,3 +13,12 @@
 nz-select {
   width: 100%;
 }
+
+.container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+nz-icon{
+  padding-left: 5px;
+}

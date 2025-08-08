@@ -1,12 +1,9 @@
 <div class="login-wrapper">
   <div class="login-container">
     <div class="form-section">
-      <!-- @if (isRegister) {
-        <h2>註冊</h2>
-      }
-      @else {
-        <h2>登入</h2>
-      } -->
+      <div style="margin-bottom: 30px;">
+        <h3>{{ isRegister ? '註冊' : '登入' }}</h3>
+      </div>
       <form [formGroup]="form">
         <nz-form-item>
           <nz-form-control>

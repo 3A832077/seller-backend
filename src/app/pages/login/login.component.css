@@ -9,18 +9,13 @@
   display: flex;
   width: 100%;
   max-width: 500px;
-  min-height: 400px;
+  min-height: 280px;
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
   flex-wrap: wrap;
   justify-content: center;
-}
-
-.form-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
 }
 
 .forgot {

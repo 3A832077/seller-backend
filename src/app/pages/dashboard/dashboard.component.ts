@@ -36,7 +36,15 @@ export class DashboardComponent implements OnInit {
 
   isBrowser: boolean;
 
-  chartData: any[] = [];
+  categorySales: any[] = [];
+
+  salesAmount: number = 0;
+
+  orderCount: number = 0;
+
+  orderComment: number = 0;
+
+  aov: number = 0;
 
   constructor(
                 @Inject(PLATFORM_ID) platformId: Object,
@@ -46,31 +54,46 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getChartsData();
+    this.getCategorySales();
   }
 
   /**
-   * 取得圖表資料
+   * 取得類別銷售量
    */
-  getChartsData() {
-    this.supabase.getChartData()?.then(({ data, error }) => {
+  getCategorySales() {
+    this.supabase.getCategorySales()?.then(({ data, error }) => {
       if (error) {
         console.error(error);
-        return;
       }
-      this.chartData = data || [];
-      this.getBarOptions();
-      this.getPieOptions();
+      else{
+        // 彙總各類別銷售量
+        const categorySales: any = {};
+        data.forEach((item: any) => {
+          const category = item.products && item.products.categories.name ? item.products.categories.name : undefined;
+          if (category) {
+            categorySales[category] = (categorySales[category] || 0) + item.quantity;
+          }
+        });
+        // 轉換成陣列
+        this.categorySales = Object.entries(categorySales).map(([category, sales]) => ({
+          category,
+          sales
+        }));
+        this.getBarOptions();
+        this.getPieOptions();
+        this.getOrderInfo();
+      }
     });
   }
+
 
   /**
    * 計算類別百分比
    * @returns
    */
   calcCategoryPercent() {
-    const totalSales = this.chartData.reduce((sum, item) => sum + item.sales, 0);
-    const percentData = this.chartData.map(item => ({
+    const totalSales = this.categorySales.reduce((sum, item) => sum + item.sales, 0);
+    const percentData = this.categorySales.map(item => ({
       name: item.category,
       value: totalSales === 0 ? 0 : Math.round((item.sales / totalSales) * 100)
     }));
@@ -102,7 +125,7 @@ export class DashboardComponent implements OnInit {
       xAxis: [
         {
           type: 'category',
-          data: this.chartData.map(item => item.category)
+          data: this.categorySales.map(item => item.category)
         }
       ],
       yAxis: [
@@ -114,7 +137,7 @@ export class DashboardComponent implements OnInit {
         {
           name: '銷售額',
           type: 'line',
-          data: this.chartData.map(item => item.sales),
+          data: this.categorySales.map(item => item.sales),
           lineStyle: {
             width: 2
           },
@@ -149,6 +172,27 @@ export class DashboardComponent implements OnInit {
         }
       ]
     };
+  }
+
+  /**
+   * 取得訂單資訊
+   */
+  getOrderInfo(){
+    this.supabase.getAllOrders()?.then(({ data, error, count }) => {
+      if (error) {
+        console.error(error);
+      }
+      else{
+        this.orderCount = count ?? 0;
+        data.forEach((item: any) => {
+          this.salesAmount += item.total;
+          if (item.comment) {
+            this.orderComment += 1;
+          }
+        });
+        this.aov = this.orderCount > 0 ? this.salesAmount / this.orderCount : 0;
+      }
+    });
   }
 
 }

@@ -44,26 +44,14 @@
           </div>
         }
         <div class="userPicDiv">
-          <span (click)="openModal()">登入</span>
-          @if (isDropdownOpen) {
-            <mat-card appearance="outlined">
-              <mat-card-header>
-                <mat-card-subtitle>
-                  {{ userEmail }}
-                  <button nz-button nzType="link" style="color: black;" (click)="toggleDropdown()">
-                    <span nz-icon nzType="close" matTooltip="關閉"></span>
-                  </button>
-                </mat-card-subtitle>
-                <mat-card-title style="padding-bottom: 15px;">
-                  <img [src]="picUrl">
-                </mat-card-title>
-                <mat-card-title style="padding-bottom: 10px;">{{ userName }} 您好!</mat-card-title>
-              </mat-card-header>
-              <mat-card-actions>
-                <button nz-button >登出</button>
-              </mat-card-actions>
-            </mat-card>
-          }
+          <div style="cursor: pointer;">
+            @if (userId && email) {
+              <span (click)="logout()">登出</span>
+            }
+            @else {
+              <span (click)="openModal()">登入</span>
+            }
+          </div>
         </div>
       </div>
     </nz-header>

@@ -10,6 +10,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { MatCardModule } from '@angular/material/card';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { LoginComponent } from './pages/login/login.component';
+import { SupabaseService } from './service/supabase.service';
 
 @Component({
     selector: 'app-root',
@@ -34,10 +35,22 @@ export class AppComponent implements OnInit {
 
   isDropdownOpen = false;
 
+  userId: string | null = null;
+
+  email: string | null = null;
+
   constructor(
                 private router: Router,
-                private modalService: NzModalService
-              ) {}
+                private modalService: NzModalService,
+                private supabaseService: SupabaseService
+              ) {
+                this.supabaseService.userId$.subscribe(userId => {
+                  this.userId = userId;
+                });
+                this.supabaseService.email$.subscribe(email => {
+                  this.email = email;
+                });
+              }
   ngOnInit() {
   }
 
@@ -50,14 +63,18 @@ export class AppComponent implements OnInit {
     return this.router.url === url;
   }
 
-
+  /**
+   * 側邊欄狀態
+   */
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  /**
+   * 開啟登入模態框
+   */
   openModal() {
     this.modalService.create({
-      nzTitle: '登入',
       nzContent: LoginComponent,
       nzFooter: null,
       nzClosable: true,
@@ -66,4 +83,16 @@ export class AppComponent implements OnInit {
       nzMaskClosable: true
     });
   }
+
+  /**
+   * 登出
+   */
+  logout() {
+     this.supabaseService?.logout()?.then(() => {
+      this.userId = null;
+      this.email = null;
+      window.location.href = '/dashboard';
+    });
+  }
+
 }

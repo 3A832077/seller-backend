@@ -2,22 +2,22 @@
   <nz-row [nzGutter]="24">
     <nz-col [nzSpan]="6">
       <nz-card>
-        <nz-statistic [nzValue]="(1000 | number)!" nzTitle="銷售額"nzPrefix="$"></nz-statistic>
+        <nz-statistic [nzValue]="salesAmount" nzTitle="銷售額"nzPrefix="$"></nz-statistic>
       </nz-card>
     </nz-col>
     <nz-col [nzSpan]="6">
       <nz-card>
-        <nz-statistic [nzValue]="(9 | number)!" nzTitle="訂單數" nzSuffix="筆"></nz-statistic>
+        <nz-statistic [nzValue]="orderCount" nzTitle="訂單數" nzSuffix="筆"></nz-statistic>
       </nz-card>
     </nz-col>
     <nz-col [nzSpan]="6">
       <nz-card>
-        <nz-statistic [nzValue]="(9 | number)!" nzTitle="買家評價" nzSuffix="個"></nz-statistic>
+        <nz-statistic [nzValue]="orderComment" nzTitle="買家評價" nzSuffix="個"></nz-statistic>
       </nz-card>
     </nz-col>
     <nz-col [nzSpan]="6">
       <nz-card>
-        <nz-statistic [nzValue]="(9 | number)!" nzTitle="客單價" nzPrefix="$"></nz-statistic>
+        <nz-statistic [nzValue]="aov" nzTitle="客單價" nzPrefix="$"></nz-statistic>
       </nz-card>
     </nz-col>
   </nz-row>

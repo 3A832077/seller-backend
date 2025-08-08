@@ -40,6 +40,12 @@ export class OrdersComponent implements OnInit {
 
   editId: string | null = null;
 
+  products: any[] = [];
+
+  orderCol: string = 'update';
+
+  orderDir: boolean = false;
+
   statusMap: any = {
     0: '新成立',
     1: '確認',
@@ -76,9 +82,9 @@ export class OrdersComponent implements OnInit {
    * @param pageIndex
    * @param pageSize
    */
-  getOrders(pageIndex: number = 1, pageSize: number = 10) {
+  getOrders(pageIndex: number = 1, pageSize: number = 10, col: string = 'update', order: boolean = false) {
     this.loading = true;
-    this.supabaseService.getOrders(pageIndex, pageSize)?.then(response => {
+    this.supabaseService.getOrders(pageIndex, pageSize, col, order)?.then(response => {
       this.loading = false;
       const { data, error, count } = response;
       if (error) {
@@ -87,6 +93,7 @@ export class OrdersComponent implements OnInit {
         return;
       }
       this.displayedList = data || [];
+      this.getProducts();
       this.total = count || 0;
       this.loading = false;
     });
@@ -120,5 +127,38 @@ export class OrdersComponent implements OnInit {
       this.getOrders();
       this.editId = null;
     });
+  }
+
+  /**
+   * 取得所有商品資料
+   */
+  getProducts() {
+    this.supabaseService.getAllProducts()?.then(response => {
+      const { data, error } = response;
+      if (error) {
+        console.error(error);
+        return;
+      }
+      this.products = data || [];
+      this.displayedList.forEach(order => {
+        order.order_items.forEach((item: any) => {
+          const product = this.products.find(p => p.id === item.products_id);
+          if (product) {
+            item.productName = product.name;
+          }
+        });
+      });
+    });
+  }
+
+   /**
+   * 排序
+   * @param sort
+   * @param column
+   */
+  onSort(sort: any, column: string) {
+    const sortField = column;
+    const sortOrder = sort === 'ascend' ? true : false;
+    this.getOrders(this.pageIndex, this.pageSize, sortField, sortOrder);
   }
 }
