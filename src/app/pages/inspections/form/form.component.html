@@ -96,7 +96,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="8">到期日</nz-form-label>
         <nz-form-control [nzSpan]="14">
-          <nz-date-picker formControlName="expiryDate" nzFormat="MM/YYYY" nzMode="month" nzPlaceHolder="請選擇到期日">
+          <nz-date-picker formControlName="expiryDate" nzFormat="MM/yyyy" nzMode="month" nzPlaceHolder="請選擇到期日">
           </nz-date-picker>
           @if (form.get('expiryDate')?.errors) {
             <div class="error">
@@ -126,3 +126,4 @@
     <button nz-button nzType="default" (click)="close()">取消</button>
   </div>
 </form>
+

@@ -36,10 +36,23 @@ export class InspectionsComponent implements OnInit {
 
   meetUrl: string = '';
 
+  userId: string | null = null;
+
+  email: string | null = null;
+
+  hasWarned = false;
+
   constructor(
                 private modalService: NzModalService,
-                private supabase: SupabaseService
-              ) { }
+                private supabase: SupabaseService,
+              ) {
+                this.supabase.userId$.subscribe(userId => {
+                  this.userId = userId;
+                });
+                this.supabase.email$.subscribe(email => {
+                  this.email = email;
+                });
+               }
 
   ngOnInit(): void {
     this.getInspections();

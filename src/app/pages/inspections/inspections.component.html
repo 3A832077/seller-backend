@@ -1,5 +1,5 @@
 <div nz-row class="header-container">
-  <button nz-button nzType="primary" (click)="openModal()">
+  <button nz-button nzType="primary" (click)="openModal()" [disabled]="!userId">
     <nz-icon nzType="plus" nzTheme="outline"></nz-icon>
     <span>申請品質檢定</span>
   </button>

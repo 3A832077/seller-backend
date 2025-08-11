@@ -39,16 +39,26 @@ export class AppComponent implements OnInit {
 
   email: string | null = null;
 
+  accessToken: string | null = null;
+
+  isExpired: boolean = false;
+
   constructor(
                 private router: Router,
                 private modalService: NzModalService,
-                private supabaseService: SupabaseService
+                public supabaseService: SupabaseService
               ) {
                 this.supabaseService.userId$.subscribe(userId => {
                   this.userId = userId;
                 });
                 this.supabaseService.email$.subscribe(email => {
                   this.email = email;
+                });
+                this.supabaseService.authToken$.subscribe(authToken => {
+                  this.accessToken = authToken;
+                });
+                this.supabaseService.isExpired$.subscribe(isExpired => {
+                  this.isExpired = isExpired;
                 });
               }
   ngOnInit() {

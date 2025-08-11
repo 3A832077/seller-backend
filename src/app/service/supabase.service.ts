@@ -15,6 +15,10 @@ export class SupabaseService {
 
   email$ = new BehaviorSubject<string | null>(null);
 
+  authToken$ = new BehaviorSubject<string | null>(null);
+
+  isExpired$ = new BehaviorSubject<boolean>(false);
+
   constructor() {
     this.createClient();
     this.loginState();
@@ -61,10 +65,14 @@ export class SupabaseService {
       if (session) {
         this.userId$.next(session.user.id);
         this.email$.next(session.user.email ?? null);
+        this.authToken$.next(session.provider_token ?? null);
+        this.isExpired$.next(session.expires_at ? session.expires_at > Date.now() : false);
       }
       else {
         this.userId$.next(null);
         this.email$.next(null);
+        this.authToken$.next(null);
+        this.isExpired$.next(false);
       }
     });
   }
@@ -77,6 +85,7 @@ export class SupabaseService {
       provider: 'google',
       options: {
         redirectTo: window.location.origin,
+        scopes: 'https://www.googleapis.com/auth/calendar.events openid email profile'
       },
     });
   }

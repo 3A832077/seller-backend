@@ -1,7 +1,7 @@
 <div nz-row class="header-container">
   <div style="display: flex;justify-content: space-between;gap: 10px;">
     <input nz-input placeholder="搜尋商品" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()"/>
-    <button nz-button nzType="primary" (click)="openModal(false)">
+    <button nz-button nzType="primary" (click)="openModal(false)" [disabled]="!userId">
       <nz-icon nzType="plus" nzTheme="outline"></nz-icon>
       <span>新增商品</span>
     </button>
@@ -54,9 +54,9 @@
           </td>
           <td nzAlign="center">{{ data.update | date: 'yyyy-MM-dd' }}</td>
           <td nzAlign="center">
-            <button nz-button nzType="link" (click)="openModal(true, data)">編輯</button>
+            <button nz-button nzType="link" (click)="openModal(true, data)" [disabled]="!userId">編輯</button>
             <nz-divider nzType="vertical"></nz-divider>
-            <button nzType="link" nz-button (click)="deleteProduct(data.id)">刪除</button>
+            <button nzType="link" nz-button (click)="deleteProduct(data.id)" [disabled]="!userId">刪除</button>
           </td>
         </tr>
       }

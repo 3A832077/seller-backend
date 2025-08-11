@@ -46,10 +46,21 @@ export class ProductsComponent implements OnInit {
 
   selectedCategory: any = null;
 
+  userId: string | null = null;
+
+  email: string | null = null;
+
   constructor(
                 private modalService: NzModalService,
                 private supabase: SupabaseService
-             ) { }
+             ) {
+                this.supabase.userId$.subscribe(userId => {
+                  this.userId = userId;
+                });
+                this.supabase.email$.subscribe(email => {
+                  this.email = email;
+                });
+              }
 
   ngOnInit(): void {
     this.getCategory();
@@ -87,10 +98,12 @@ export class ProductsComponent implements OnInit {
         return;
       }
       this.total = count || 0;
-      this.displayedList = data.map((item: any) => {
-        item.categoryName = this.categoryList.find(category => category.id === item.category)?.name;
-        return item;
-      });
+      if (this.userId && this.email){
+        this.displayedList = data.map((item: any) => {
+          item.categoryName = this.categoryList.find(category => category.id === item.category)?.name;
+          return item;
+        });
+      }
     });
   }
 

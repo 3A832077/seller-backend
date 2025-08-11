@@ -11,12 +11,12 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { AuthService } from '../../../service/auth.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { env } from '../../../env/environment';
 import { checkCardNumberValidator } from '../../../validator/checkCradNumber';
 import { checkExpireDateValidator } from '../../../validator/checkExpireDate';
 import { SupabaseService } from '../../../service/supabase.service';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'inspections-form',
@@ -53,6 +53,10 @@ export class FormComponent implements OnInit {
 
   cardTypeImg: string | null = null;
 
+  accessToken: string | null = null;
+
+  isExpired: boolean = false;
+
   timeList: any[] = [
     { label: '09:00 - 10:00' },
     { label: '10:00 - 11:00' },
@@ -67,10 +71,17 @@ export class FormComponent implements OnInit {
     private fb: FormBuilder,
     private message: NzMessageService,
     private modal: NzModalRef,
-    private authService: AuthService,
     private http: HttpClient,
     private supabase: SupabaseService,
-  ) {}
+    private modalService: NzModalService
+  ) {
+      this.supabase.authToken$.subscribe(authToken => {
+        this.accessToken = authToken;
+      });
+      this.supabase.isExpired$.subscribe(isExpired => {
+        this.isExpired = isExpired;
+      });
+    }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -94,8 +105,26 @@ export class FormComponent implements OnInit {
    */
   timeChange(event: any): void {
     if (event) {
-      this.form.get('detailTime')?.setValue(null); // 清除已選的詳細時間
       const [start, end] = event.split(' - ');
+      const selectedDate = this.form.value.date;
+      if (selectedDate) {
+        const now = new Date();
+        const startDateTime = new Date(selectedDate);
+        const [startHour, startMin] = start.split(':').map(Number);
+        startDateTime.setHours(startHour, startMin, 0, 0);
+
+        const endDateTime = new Date(selectedDate);
+        const [endHour, endMin] = end.split(':').map(Number);
+        endDateTime.setHours(endHour, endMin, 0, 0);
+
+        if (startDateTime < now && endDateTime < now) {
+          this.message.warning('已超過目前時間，請重新選擇');
+          this.detailTimeList = [];
+          this.form.get('detailTime')?.setValue(null);
+          return;
+        }
+      }
+      this.form.get('detailTime')?.setValue(null);
       this.generateDetailTime(start, end);
     }
     else {
@@ -203,14 +232,17 @@ export class FormComponent implements OnInit {
   private generateDetailTime(start: string, end: string): void {
     const startTime = this.parseTime(start);
     const endTime = this.parseTime(end);
+    const now = new Date();
     const times: { label: string; value: string }[] = [];
 
     let currentTime = startTime;
     while (currentTime < endTime) {
-      times.push({
-        label: this.formatTime(currentTime),
-        value: this.formatTime(currentTime),
-      });
+      if (currentTime >= now) {
+        times.push({
+          label: this.formatTime(currentTime),
+          value: this.formatTime(currentTime),
+        });
+      }
       currentTime = new Date(currentTime.getTime() + 15 * 60000); // 加 15 分鐘
     }
 
@@ -275,10 +307,6 @@ export class FormComponent implements OnInit {
    * 建立會議
    */
   createEvent() {
-    const expiresAt = parseInt(localStorage.getItem('expires_at') || '0');
-    const accessToken = localStorage.getItem('accessToken') || '';
-    const isTokenExpired = Date.now() >= expiresAt;
-
     const selectedDate = this.form.value.date;
     const selectedTime = this.form.value.detailTime;
 
@@ -288,13 +316,19 @@ export class FormComponent implements OnInit {
 
     const endDateTime = new Date(startDateTime.getTime() + 30 * 60000); // 加 30 分鐘
 
-    if (!accessToken || isTokenExpired) {
-      this.authService.setupOneTap();
+    if (!this.accessToken || this.isExpired) {
+      this.modalService.info({
+        nzContent: '請先綁定Google帳號',
+        nzOkText: '確定',
+        nzOnOk: () => {
+          this.supabase.googleLogin();
+        }
+      });
       return;
     }
 
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${this.accessToken}`,
       'Content-Type': 'application/json',
     });
 
@@ -317,18 +351,16 @@ export class FormComponent implements OnInit {
     };
 
     this.http.post(env.googleApiUrl, event, { headers }).pipe(
-        tap((response: any) => {
-          this.meetUrl = response.hangoutLink;
-          console.log('會議連結:', this.meetUrl);
-        }),
-        catchError((error) => {
-          console.error(error);
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {
+      tap((response: any) => {
+        this.meetUrl = response.hangoutLink;
+        console.log('會議連結:', this.meetUrl);
+      }),
+      catchError((error) => {
+        console.error(error);
+        return EMPTY;
+      })).subscribe(() => {
         this.submit();
-      });
+    });
   }
 
   /**

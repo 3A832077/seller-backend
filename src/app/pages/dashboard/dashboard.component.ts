@@ -48,10 +48,10 @@ export class DashboardComponent implements OnInit {
 
   constructor(
                 @Inject(PLATFORM_ID) platformId: Object,
-                public supabase: SupabaseService
+                public supabase: SupabaseService,
              ) {
-                this.isBrowser = isPlatformBrowser(platformId);
-  }
+               this.isBrowser = isPlatformBrowser(platformId);
+             }
 
   ngOnInit() {
     this.getCategorySales();
