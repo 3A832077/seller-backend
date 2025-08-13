@@ -1,5 +1,5 @@
 <div nz-row class="header-container">
-  <div style="display: flex;justify-content: space-between;gap: 10px;">
+  <div class="actionDiv">
     <input nz-input placeholder="搜尋商品" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()"/>
     <button nz-button nzType="primary" (click)="openModal(false)" [disabled]="!userId">
       <nz-icon nzType="plus" nzTheme="outline"></nz-icon>

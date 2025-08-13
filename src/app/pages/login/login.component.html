@@ -1,7 +1,7 @@
 <div class="login-wrapper">
   <div class="login-container">
     <div class="form-section">
-      <div style="margin-bottom: 30px;">
+      <div class="mb-30">
         <h3>{{ isRegister ? '註冊' : '登入' }}</h3>
       </div>
       <form [formGroup]="form">
@@ -40,10 +40,6 @@
           }
           @else {
             <button nz-button nzType="primary" (click)="login()">登入</button>
-            <button nz-button nzType="default" (click)="supabaseService.googleLogin()">
-              <nz-icon nzType="google" nzTheme="outline" />
-              <span>Google</span>
-            </button>
           }
         </div>
       </form>

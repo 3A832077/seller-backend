@@ -16,3 +16,10 @@ nz-table {
   width: 100%;
   overflow-x: auto;
 }
+
+.actionDiv{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+

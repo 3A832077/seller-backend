@@ -110,7 +110,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="11">安全碼</nz-form-label>
         <nz-form-control [nzSpan]="11">
-          <input nz-input formControlName="csv" maxlength="3" style="width: 80px" type="password" autocomplete="cc-csc"/>
+          <input nz-input formControlName="csv" maxlength="3" class="csvInput" type="password" autocomplete="cc-csc"/>
           @if (form.get('csv')?.errors) {
             <div class="error">
               <span>無效的安全碼</span>
