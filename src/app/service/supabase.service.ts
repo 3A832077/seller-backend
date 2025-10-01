@@ -81,11 +81,10 @@ export class SupabaseService {
    * 使用 Google 登入
    */
   googleLogin() {
-    const redirectTo = env.apiUrl || window.location.origin;
     return this.supabase?.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectTo,
+        redirectTo: window.location.origin,
         scopes: 'https://www.googleapis.com/auth/calendar.events openid email profile'
       },
     });
