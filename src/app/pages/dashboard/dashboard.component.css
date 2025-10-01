@@ -5,3 +5,16 @@
 .pb-50{
   padding-bottom: 50px;
 }
+
+nz-statistic {
+  word-wrap: break-word;
+  word-break: break-all;
+  text-align: center; /* 小螢幕置中 */
+}
+
+.card {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

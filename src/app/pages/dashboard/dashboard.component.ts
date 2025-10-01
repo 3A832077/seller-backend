@@ -101,7 +101,7 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * 取得折線圖
+   * 取得長條圖
    */
   getBarOptions() {
     const colors = ['#5470C6', '#91CC75', '#EE6666', '#FFB980', '#73C0DE',
@@ -136,7 +136,7 @@ export class DashboardComponent implements OnInit {
       series: [
         {
           name: '銷售額',
-          type: 'line',
+          type: 'bar',
           data: this.categorySales.map(item => item.sales),
           lineStyle: {
             width: 2
@@ -152,12 +152,13 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * 取得長條圖
+   * 取得圓餅圖
    */
   getPieOptions() {
     this.pieOptions = {
       tooltip: {
         trigger: 'item',
+        formatter: '{b}: {d}%'
       },
       legend: {
         orient: 'vertical',
@@ -190,7 +191,7 @@ export class DashboardComponent implements OnInit {
             this.orderComment += 1;
           }
         });
-        this.aov = this.orderCount > 0 ? this.salesAmount / this.orderCount : 0;
+        this.aov = this.orderCount > 0 ? Number((this.salesAmount / this.orderCount).toFixed(2)) : 0;
       }
     });
   }

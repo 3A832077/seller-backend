@@ -1,22 +1,29 @@
-<div nz-col nzSpan="24" class="pb-50">
+<div class="pb-50">
   <nz-row [nzGutter]="24">
-    <nz-col [nzSpan]="6">
-      <nz-card>
-        <nz-statistic [nzValue]="salesAmount" nzTitle="銷售額"nzPrefix="$"></nz-statistic>
+    <!-- 銷售額 -->
+    <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+      <nz-card class="card">
+        <nz-statistic [nzValue]="salesAmount" nzTitle="銷售額" nzPrefix="$"></nz-statistic>
       </nz-card>
     </nz-col>
-    <nz-col [nzSpan]="6">
-      <nz-card>
+
+    <!-- 訂單數 -->
+    <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+      <nz-card class="card">
         <nz-statistic [nzValue]="orderCount" nzTitle="訂單數" nzSuffix="筆"></nz-statistic>
       </nz-card>
     </nz-col>
-    <nz-col [nzSpan]="6">
-      <nz-card>
+
+    <!-- 買家評價 -->
+    <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+      <nz-card class="card">
         <nz-statistic [nzValue]="orderComment" nzTitle="買家評價" nzSuffix="個"></nz-statistic>
       </nz-card>
     </nz-col>
-    <nz-col [nzSpan]="6">
-      <nz-card>
+
+    <!-- 客單價 -->
+    <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+      <nz-card class="card">
         <nz-statistic [nzValue]="aov" nzTitle="客單價" nzPrefix="$"></nz-statistic>
       </nz-card>
     </nz-col>
